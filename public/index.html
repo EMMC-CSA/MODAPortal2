@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <base href="/">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The European Materials Modelling Council — EMMC</title>
+    <meta name="description" content="The European Materials Modelling Council — EMMC" />
+    <meta name="og:title" content="The European Materials Modelling Council — EMMC" />
+    <meta name="og:description" content="The European Materials Modelling Council — EMMC" />
+    <meta name="og:image" content="https://emmc.info/img/logo.jpg" />
+    <meta name="robots" content="follow, index" />
+    <meta name="msapplication-config" content="/bld/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="apple-touch-icon" sizes="256x256" href="favicon.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/bld/favicon.png" />
+    <link rel="manifest" href="/bld/manifest.json" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700|Roboto:300" rel="stylesheet">
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/js/_lib/angular.js"></script>
+    <script src="/js/_lib/angular-sanitize.js"></script>
+    <script src="/js/_lib/angular-route.js"></script>
+    <script src="/js/_lib/angular-cookies.js"></script>
+    <script src="/js/_lib/clipboard.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/services/home.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/services/users.js"></script>
+    <script src="/js/services/modas.js"></script>
+    <script src="/js/controllers/main.js"></script>
+    <script src="/js/controllers/login.js"></script>
+    <script src="/js/controllers/register.js"></script>
+    <script src="/js/controllers/home.js"></script>
+    <script src="/js/controllers/account.js"></script>
+    <script src="/js/controllers/modas.js"></script>
+    <script src="/js/controllers/moda.js"></script>
+    <script src="/js/controllers/about.js"></script>
+    <script src="/js/directives/main.js"></script>
+</head>
+
+<body class="vbox viewport" ng-controller="mainCtrl">
+    <header>
+        <div c-activate="logo" id="logo">
+            <a href="/"><h1>EMMC</h1></a>
+        </div>
+        <div id="toolbar">
+            <div class="toolbarBtn" ng-if="loggedin"><a href="/modas"><h5 id="modasBtn" c-activate="toolbar">MODAS</h5></a></div>
+            <div class="toolbarBtn" ng-if="loggedin"><a href="/account"><h5 id="accountBtn" c-activate="toolbar">ACCOUNT</h5></a></div>
+            <div class="toolbarBtn" ng-if="!loggedin"><a href="/register"><h5 id="registerBtn" c-activate="toolbar">REGISTER</h5></a></div>
+            <div class="toolbarBtn" ng-if="!loggedin"><a href="/login"><h5 id="loginBtn" c-activate="toolbar">LOGIN</h5></a></div>
+            <div class="toolbarBtn" ng-if="loggedin"><a href="/" ng-click="logout()"><h5>LOGOUT</h5></a></div>
+        </div>
+    </header>
+    <div id="loadingMsg" ng-if="showLoading">LOADING...</div>
+    <div id="errMsg" ng-if="showErr">{{errMsg}}</div>
+    <div class="container space-between" ng-view>
+    </div>
+    <footer>
+        <div id="contact">
+            <span><a href="https://twitter.com/emmc.info" target="_blank"><h5>TWITTER</h5></a></span> /
+            <span><a href="https://fb.com/emmc.info" target="_blank"><h5>FB</h5></a></span> /
+            <span><a href="mailto:info@emmc.info"><h5>EMAIL</h5></a></span>
+        </div>
+        <div id="about">
+            <div class="footerBtn"><h5 id="aboutBtn" c-activate="toolbar"><a href="/about">ABOUT</a></h5></div>
+        </div>
+        <div id="copyright"><span id="copyrightsign">&copy;</span> EMMC</div>
+    </footer>
+</body>
+
+</html>

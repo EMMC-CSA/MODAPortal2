@@ -1,0 +1,102 @@
+<div class="sectionContainer">
+    <div class="sectionContent">
+        <div class="subsectionContainer">
+            <div class="sectionHeader">
+                <button class="customBtn" ng-click="save()">SAVE</button>
+                <button class="customBtn cancelBtn" ng-click="go('/modas')">CANCEL</button>
+            </div>
+            <div class="subsectionContent">
+                <form name="modaForm" id="modaForm">
+                    <div class="inputwrapper">
+                        <div class="inputlabel">USE CASE:</div>
+                        <div class="inputsublabel">Please give the properties and behaviour of the particular material, manufacturing process and/or in-service-behaviour to be simulated.<br/>
+                        No information on the modelling should appear here. The idea is that this user-case can also be simulated by others with other models and that the results can then be compared.</div>
+                        <input class="input" id="usecaseinput" name="usecaseinput" type="text" ng-model="modaData.usecase"></input>
+                    </div>
+
+                    
+                    <div class="inputlabel" style="margin-bottom: 20px;">CHAIN OF MODELS: <button class="customBtn smallerBtn" ng-click="addmodel()">+</button></div>
+                    
+                    <div class="modelWrapper" ng-repeat="model in modaData.models track by $index" >
+                        <div class="inputlabel" style="margin-bottom: 20px;">
+                            <span><b>MODEL {{$index+1}}</b></span>  
+                            <button class="customBtn smallerBtn" ng-click="removemodel($index)" style="color: red">&#10005;</button>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">MODEL TYPE:</div>
+                            <select class="input" name="singleSelect" id="singleSelect" ng-model="model.type" ng-change="updatemodeltype($index)">
+                                <option value="type1">Type 1</option>
+                                <option value="type2">Type 2</option>
+                                <option value="type3">Type 3</option>
+                                <option value="type4">Type 4</option>
+                            </select>
+                        </div>
+                        <div ng-if="model.type == 'type1'">
+                            <div class="inputwrapper">
+                                <div class="inputlabel">MATERIAL:</div>
+                                <input class="input" id="materialinput" name="materialinput" type="text" ng-model="model.material"></input>
+                            </div>
+                            <div class="inputwrapper">
+                                <div class="inputlabel">GEOMETRY:</div>
+                                <input class="input" id="geominput" name="geominput" type="text" ng-model="model.geom"></input>
+                            </div>
+                            <div class="inputwrapper">
+                                <div class="inputlabel">TIME LAPSE:</div>
+                                <input class="input" id="timelapseinput" name="timelapseinput" type="text" ng-model="model.timelapse"></input>
+                            </div>
+                            <div class="inputwrapper">
+                              <div class="inputlabel">MATHML EQUATION:</div>
+                              <input class="input" id="mathmleqinput" name="mathmleqinput" type="text" ng-model="model.mathmleq"></input>
+                              <div ng-math-jax>
+                                <div ng-bind-html="mathmltext(model.mathmleq)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="model.type == 'type2'">
+                        <div class="inputwrapper">
+                            <div class="inputlabel">ENTITY:</div>
+                            <input class="input" id="entityinput" name="entityinput" type="text" ng-model="model.entity"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">PHYSICS/CHEMISTRY EQUATION:</div>
+                            <input class="input" id="physchemequationinput" name="physchemequationinput" type="text" ng-model="model.physchemequation"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">MATERIALS RELATIONS:</div>
+                            <input class="input" id="materialrelationsinput" name="materialrelationsinput" type="text" ng-model="model.materialsrelations"></input>
+                        </div>
+                    </div>
+                    <div ng-if="model.type == 'type3'">
+                        <div class="inputwrapper">
+                            <div class="inputlabel">NUMERICAL SOLVER:</div>
+                            <input class="input" id="numsolverinput" name="numsolverinput" type="text" ng-model="model.numsolver"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">SOFTWARE TOOL:</div>
+                            <input class="input" id="softwaretoolinput" name="softwaretoolinput" type="text" ng-model="model.softwaretool"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">TIME STEP:</div>
+                            <input class="input" id="timestepinput" name="timestepinput" type="text" ng-model="model.timestep"></input>
+                        </div>
+                    </div>
+                    <div ng-if="model.type == 'type4'">
+                        <div class="inputwrapper">
+                            <div class="inputlabel">DATABASE AND TYPE:</div>
+                            <input class="input" id="dbinput" name="dbinput" type="text" ng-model="model.db"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">EQUATION:</div>
+                            <input class="input" id="equationinput" name="equationinput" type="text" ng-model="model.euqation"></input>
+                        </div>
+                        <div class="inputwrapper">
+                            <div class="inputlabel">MARGIN OF ERROR:</div>
+                            <input class="input" id="errmargininput" name="errmargininput" type="text" ng-model="model.errmargin"></input>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
