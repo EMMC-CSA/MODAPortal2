@@ -1,0 +1,21 @@
+<div class="sectionContainer">
+    <div class="sectionContent">
+        <div class="subsectionContainer">
+            <div class="sectionHeader">
+               <button class="customBtn" ng-click="go('/newmoda')">NEW</button>
+           </div>
+           <div class="subsectionContent">
+            <div id="modasList">
+                <div class="listItemV" id="modaItem{{moda.id}}" ng-if="modas.length > 0" ng-repeat="moda in modas track by moda.id">
+                    <div><span class="grayText">ID:</span> {{moda.id}}</div>
+                    <div><span class="grayText">USE CASE:</span> {{moda.data.usecase_title}}</div>
+                    <div><span class="grayText">MODELS:</span> {{moda.data.models.length}}</div>
+                    <a href="/modas/{{moda.id}}">DETAILS &rsaquo;</a>
+                </div>
+            </div>
+            <div class="loadMoreBtn" ng-if="modas.length > 0" ng-click="loadMoreModas()" ng-class="{'disabledDiv' : fetchedAllModas}">
+                LOAD MORE
+            </div>
+        </div>
+    </div>
+</div>

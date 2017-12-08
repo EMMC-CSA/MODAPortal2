@@ -1,0 +1,41 @@
+<div class="sectionContainer">
+    <div class="sectionContent">
+        <div class="subsectionContainer">
+            <div class="sectionHeader">
+                <button class="customBtn" ng-click="handleEdit()">{{editMode ? 'SAVE' : 'EDIT'}}</button>
+                <button class="customBtn" style="color:red" ng-click="deactivateProfile()">DEACTIVATE</button>
+                <button class="customBtn cancelBtn" ng-click="cancelDeactivateProfile()" ng-if="deactivateCounter == 1">CANCEL</button>
+            </div>
+            <div class="subsectionContent">
+                <form name="accountForm" id="accountForm">
+                    <div class="inputwrapper">
+                        <div class="inputlabel">EMAIL:</div>
+                        <div class="inputVal" ng-if="!editMode" class="subsectionDetailContent">{{user.email}}</div>
+                        <input ng-if="editMode" class="input" id="emailinput" name="emailinput" type="email" ng-model="user.email" ng-keyup="($event.keyCode == 13) && checkemail()" ng-blur="checkemail()" ng-class="{'hasErrBorder': warnEmail}"></input>
+                    </div>
+
+                    <div class="inputwrapper">
+                        <div class="inputlabel">PASSWORD:</div>
+                        <div class="inputVal" ng-if="!editMode" class="subsectionDetailContent">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+                        <input ng-if="editMode" class="input" id="passinput" name="passinput" type="password" ng-model="user.password" ng-keyup="$event.keyCode == 13 && checkpassword()" ng-blur="checkpassword()" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" ng-class="{'hasErrBorder': warnPass}"></input>
+                    </div>
+                    <div class="inputwrapper">
+                        <div class="inputlabel">FULL NAME:</div>
+                        <div class="inputVal" ng-if="!editMode" class="subsectionDetailContent">{{user.name}}</div>
+                        <input ng-if="editMode" class="input" id="fullnameinput" name="fullnameinput" type="text" ng-model="user.name" ng-keyup="$event.keyCode == 13 && checkfullname()" ng-blur="checkfullname()" ng-class="{'hasErrBorder': warnFullName}"></input>
+                    </div>
+                    <div class="inputwrapper">
+                        <div class="inputlabel">COUNTRY:</div>
+                        <div class="inputVal" ng-if="!editMode" class="subsectionDetailContent">{{user.country}}</div>
+                        <input ng-if="editMode" class="input" id="countryinput" name="countryinput" type="text" ng-model="user.country" ng-keyup="$event.keyCode == 13 && checkcountry()" ng-blur="checkcountry()" ng-class="{'hasErrBorder': warnCountry}"></input>
+                    </div>
+                    <div class="inputwrapper">
+                        <div class="inputlabel">ORGANIZATION:</div>
+                        <div class="inputVal" ng-if="!editMode" class="subsectionDetailContent">{{user.org_name}}</div>
+                        <input ng-if="editMode" class="input" id="orgnameinput" name="orgnameinput" type="text" ng-model="user.org_name" ng-keyup="$event.keyCode == 13 && checkorgname()" ng-blur="checkorgname()" ng-class="{'hasErrBorder': warnOrgName}"></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
