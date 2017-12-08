@@ -11,6 +11,8 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		ModasService.getModa(parseInt($scope.modaIdParam)).then(function(res) {
 			$scope.modaData = res.data.data.data;
 			$scope.modaId = res.data.data.id;
+			d3.select("#graphVizContainer").graphviz()
+			.renderDot($scope.modaData.workflowDOT);
 		});
 	} else{
 		$scope.modaData = {
@@ -21,6 +23,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			},
 			post_processing: {}
 		};
+		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=0.8; nodesep=1.5; edge[constraint=false];}';
 	}
 
 	$scope.modelVariants = [
@@ -30,9 +33,9 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	{id:4, name: "NAME 4", entity: "ENTITY 4"}
 	]; 
 
-	d3.graphviz("#graphVizContainer")
-	.fade(false)
-	.renderDot('digraph G {rankdir=LR; subgraph cluster_0 {node [style=filled];a0 -> a1 -> a2 -> a3;label = "process #1";}subgraph cluster_1 {node [style=filled];b0 -> b1 -> b2 -> b3;label = "process #2";}a3->b1[constraint=true]}');
+	// d3.graphviz("#graphVizContainer")
+	// .fade(false)
+	// .renderDot('digraph G {rankdir=LR; splines="ortho"; ranksep=1.5; nodesep=2; subgraph cluster_0 {node [style=filled] a0[fillcolor="#e07b7b" label="a very long label"];a0 -> a1 -> a2 -> a3;label = "MODEL #1";}subgraph cluster_1 {node [style=filled];b0 -> b1 -> b2 -> b3;label = "MODEL #2";} edge[constraint=false]; a3->b1;}');
 
 	$scope.mathmltext= function(html_code){       
 		return $sce.trustAsHtml(html_code);
@@ -41,8 +44,46 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		$location.path( path );
 	}
 
+	$scope.regenerateworkflow = function(){
+		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; nodesep=1.5; edge[constraint=false]; }';
+
+		for (i = 0; i < $scope.modaData.models.length; i++) {
+			var model = $scope.modaData.models[i];
+			var modelNum = i+1;
+			var nodeNames = []
+			for(var j=0; j<4; j++){
+				var name = 'n' + modelNum + '_' + j;
+				nodeNames.push(name);
+			}
+
+			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=1.8, height=1.1] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="user case input"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="model'+ modelNum +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="raw output"] ' + nodeNames[3] + '[fillcolor="#d6fdd0" label="processed output"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
+			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=1.5;")+13;
+			var output = [$scope.modaData.workflowDOT.slice(0, insertPos), DOTstr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
+			$scope.modaData.workflowDOT = output;
+
+			var relStr = '';
+			for (var k=0; k<model.link_to_models.length; k++){
+				var linkedModelNum = model.link_to_models[k];
+				var linkedNodeModelName = 'n' + linkedModelNum + '_1';
+				var thisNodeModelName = 'n' + modelNum + '_3';
+				relStr += thisNodeModelName+'->'+linkedNodeModelName+'; ';
+			}
+
+			insertPos = $scope.modaData.workflowDOT.lastIndexOf("}")-1;
+			output = [$scope.modaData.workflowDOT.slice(0, insertPos), relStr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
+			$scope.modaData.workflowDOT = output;
+		}
+
+		angular.element(document.querySelector('#graphVizContainer')).empty();
+
+		d3.select("#graphVizContainer").graphviz()
+		.renderDot($scope.modaData.workflowDOT);
+	}
+
 	$scope.addmodel = function() {
-		var model = {};
+		var model = {
+			link_to_models: []
+		};
 		$scope.modaData.models.push(model);
 	}
 	$scope.removemodel = function(index) {

@@ -215,6 +215,13 @@ h5 {
     width:90%;
 }
 
+.hContent{
+    display: flex;
+    flex: 1 0 auto;
+    flex-grow: 1;
+    flex-direction: row;
+}
+
 .input {
     font-size: 1.8vw;
     width: 90%;
@@ -246,6 +253,11 @@ input[type=number]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     margin-bottom: 70px;
+}
+
+.inputwrapperH{
+    display: flex;
+    flex-direction: row;
 }
 
 .subinputwrapper{
