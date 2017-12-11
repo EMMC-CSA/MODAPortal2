@@ -23,7 +23,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			},
 			post_processing: {}
 		};
-		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=0.8; nodesep=1.5; edge[constraint=false];}';
+		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=equally; edge[constraint=false];}';
 	}
 
 	$scope.modelVariants = [
@@ -45,9 +45,9 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	}
 
 	$scope.regenerateworkflow = function(){
-		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; nodesep=1.5; edge[constraint=false]; }';
+		$scope.modaData.workflowDOT = 'digraph G {rankdir="LR"; splines="ortho"; ranksep=equally; nodesep=equally; ratio=auto; compound=true; fontname=Courier; centre=true; fixedsize=true; edge[constraint=false]; }';
 
-		for (i = 0; i < $scope.modaData.models.length; i++) {
+		for (var i = 0; i < $scope.modaData.models.length; i++) {
 			var model = $scope.modaData.models[i];
 			var modelNum = i+1;
 			var nodeNames = []
@@ -57,7 +57,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			}
 
 			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=1.8, height=1.1] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="user case input"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="model'+ modelNum +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="raw output"] ' + nodeNames[3] + '[fillcolor="#d6fdd0" label="processed output"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
-			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=1.5;")+13;
+			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=equally;")+17;
 			var output = [$scope.modaData.workflowDOT.slice(0, insertPos), DOTstr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
 			$scope.modaData.workflowDOT = output;
 
