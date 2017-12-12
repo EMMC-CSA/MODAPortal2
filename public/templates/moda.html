@@ -8,148 +8,241 @@
             <div class="subsectionContent">
                 <form name="modaForm" id="modaForm">
                     <div class="inputwrapper">
-                        <div class="inputlabel">USE CASE [SHORT TITLE]:</div>
-                        <input class="input" type="text" ng-model="modaData.usecase_title"></input>
-                    </div>
-
-                    <div class="inputwrapper">
-                        <div class="inputlabel">PROJECT [NAME/ACRONYM]:</div>
-                        <input class="input" type="text" ng-model="modaData.project_name"></input>
-                    </div>
-
-                    <div class="inputwrapper">
-                        <div class="inputlabel">OVERVIEW OF THE SIMULATION</div>
-                        <div class="subinputwrapper">
-                            <div class="inputwrapper">
-                                <div class="inputlabel">USE CASE [DESCRIPTION]:</div>
-                                <textarea class="input" rows="4" cols="50" ng-model="modaData.simulation_overview.usecase_desc"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">PUBLICATION(S) PEERREVIEWING THE SIMULATION:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.simulation_overview.publications_peer"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">ACCESS CONDITIONS:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.simulation_overview.access_conditions"></textarea>
-                            </div>
-                            <div class="inputwrapper nomarginbtm">
-                                <div class="inputlabel">WORKFLOW AND ITS RATIONALE:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.simulation_overview.workflow_rationale"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inputwrapper">
-                        <div class="inputlabel">WORKFLOW</div>
-                        <div id="graphVizContainer"></div>
-                    </div>
-                    <div class="inputwrapper">
-                        <div class="inputlabel">
-                            <span>MODELS | </span>
-                            <button class="customBtn smallerBtn" ng-click="addmodel()">ADD</button>
-                            <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">REGENERATE WORKFLOW</button>
+                        <div class="inputlabel mainSectionTitle">
+                            <span>CREATE/UPDATE YOUR MODA</span>
                         </div>
                         <div class="subinputwrapper">
-                            <div class="entityWrapper" ng-repeat="model in modaData.models track by $index">
-                                <div class="inputlabel hContent" style="margin-bottom: 20px;">
-                                    <div>
-                                        <span><b>MODEL {{$index+1}} | </b></span>
-                                        <button class="customBtn smallerBtn" ng-show="expandedModels.indexOf($index)<0" ng-click="expandModel($index)">EXPAND |</button>
-                                        <button class="customBtn smallerBtn" ng-show="expandedModels.indexOf($index)>-1" ng-click="collapseModel($index)">COLLAPSE |</button>
-                                        <button class="customBtn smallerBtn" ng-click="removemodel($index)" style="color: red">REMOVE |</button>
-                                    </div>
-                                    <div style="width: 55%;">
+                            <div class="inputlabel">USE CASE (SHORT TITLE):</div>
+                            <input class="input" type="text" ng-model="modaData.usecase_title" maxlength="25"></input>
+                        </div>
+
+                        <div class="subinputwrapper">
+                            <div class="inputlabel">PROJECT (NAME/ACRONYM):</div>
+                            <input class="input" type="text" ng-model="modaData.project_name" maxlength="25"></input>
+                        </div>
+                        <div class="subinputwrapper">
+                            <div class="inputlabel mainSectionSubTitle">
+                                <span>OVERVIEW OF THE SIMULATION |</span>
+                                <button class="customBtn smallerBtn showBtn" ng-show="!ui.showOverview" ng-click="toggleOverview()">[SHOW]</button>
+                                <button class="customBtn smallerBtn hideBtn" ng-show="ui.showOverview" ng-click="toggleOverview()">[HIDE]</button>
+                            </div>
+                            <div ng-show="ui.showOverview">
+                                <div class="subinputwrapper">
+                                    <div class="inputlabel">USE CASE (DESCRIPTION):</div>
+                                    <textarea class="input" rows="4" cols="50" ng-model="modaData.simulation_overview.usecase_desc"></textarea>
+                                </div>
+                                <div class="subinputwrapper">
+                                    <div class="inputlabel">PUBLICATION(S) PEERREVIEWING THE SIMULATION:</div>
+                                    <textarea class="input" rows="2" cols="40" ng-model="modaData.simulation_overview.publications_peer"></textarea>
+                                </div>
+                                <div class="subinputwrapper">
+                                    <div class="inputlabel">ACCESS CONDITIONS:</div>
+                                    <textarea class="input" rows="1" cols="40" ng-model="modaData.simulation_overview.access_conditions"></textarea>
+                                </div>
+                                <div class="subinputwrapper nomarginbtm">
+                                    <div class="inputlabel">WORKFLOW AND ITS RATIONALE:</div>
+                                    <textarea class="input" rows="4" cols="40" ng-model="modaData.simulation_overview.workflow_rationale"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subinputwrapper">
+                            <div class="inputlabel mainSectionSubTitle">
+                                <span>MODA WORKFLOW PLOT |</span>
+                                <button class="customBtn smallerBtn showBtn" ng-show="!ui.showWorkflow" ng-click="toggleWorkflow()">[SHOW]</button>
+                                <button class="customBtn smallerBtn hideBtn" ng-show="ui.showWorkflow" ng-click="toggleWorkflow()">[HIDE]</button>
+                            </div>
+                            <div class="subinputwrapper" ng-show="ui.showWorkflow">
+                                <div id="graphVizContainer">WORKFLOW PLOT WILL BE GENERATED HERE AS YOU ADD AND CONNECT (LINK/COUPLE) MODELS</div>
+                            </div>
+                        </div>
+                        <div class="subinputwrapper">
+                            <div class="inputlabel mainSectionSubTitle">
+                                <span>MODELS | </span>
+                                <button class="customBtn smallerBtn showBtn" ng-show="!ui.showModels" ng-click="toggleModels()">[SHOW]</button>
+                                <button class="customBtn smallerBtn hideBtn" ng-show="ui.showModels" ng-click="toggleModels()">[HIDE]</button>
+                                <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
+                                <button class="customBtn smallerBtn" ng-show="ui.showModels" ng-click="addmodel()">[ADD MODEL]</button>
+                            </div>
+                            <div class="inputsublabel">
+                                Click SHOW / HIDE on each section to toggle visibility
+                            </div>
+                            <div class="subinputwrapper" ng-show="ui.showModels">
+                                <div class="entityWrapper" ng-repeat="model in modaData.models track by $index">
+                                    <div class="inputlabel hContent" style="margin-bottom: 20px;">
+                                        <div>
+                                            <span><b>MODEL {{$index+1}} | </b></span>
+                                            <button class="customBtn smallerBtn showBtn" ng-show="expandedModels.indexOf($index)<0" ng-click="expandModel($index)">[SHOW]</button>
+                                            <button class="customBtn smallerBtn hideBtn" ng-show="expandedModels.indexOf($index)>-1" ng-click="collapseModel($index)">[HIDE]</button>
+                                            <button class="customBtn smallerBtn" ng-click="removemodel($index)" style="color: red">[REMOVE]</button>
+                                        </div>
                                         <div class="inputwrapperH">
-                                            <div class="inputlabel autoWidth">LINK TO MODEL NO.:</div>
-                                            <select class="input multiInput" ng-model="model.link_to_models" multiple>
-                                                <option ng-repeat="modelsub in modaData.models" value="{{$index+1}}">{{$index+1}}</option>
+                                            <div class="inputlabel autoWidth">| MODEL TYPE:</div>
+                                            <select class="input autoWidth typeHeight" ng-model="model.type_entity" ng-options="modelVariant.type for modelVariant in modelVariants track by modelVariant.id">
+                                                <option value="">SELECT</option>
+                                            </select>
+                                        </div>
+                                        <div class="inputwrapperH">
+                                            <div class="inputlabel autoWidth">| <b>LINK</b> TO MODEL(S):</div>
+                                            <select class="input multiInput" ng-options="modelsub.number as modelsub.number for modelsub in modaData.models | filter:skipValues(model, 1)" ng-model="model.link_to_models" multiple size="2">
+                                            </select>
+                                        </div>
+                                        <div class="inputwrapperH">
+                                            <div class="inputlabel autoWidth">| <b>COUPLE</b> TO MODEL(S):</div>
+                                            <select class="input multiInput" ng-options="modelsub.number as modelsub.number for modelsub in modaData.models | filter:skipValues(model)" ng-model="model.couple_to_models" ng-change="modifyCoupling(model)" multiple size="2">
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div ng-show="expandedModels.indexOf($index)>-1">
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">MODEL NAME:</div>
-                                        <select class="input" ng-model="model.name_entity" ng-options="modelVariant.name for modelVariant in modelVariants track by modelVariant.id">
-                                            <option value="">CHOOSE NAME</option>
-                                        </select>
-                                    </div>
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">ENTITY:</div>
-                                        <div class="setValue">{{model.name_entity.entity}}</div>
-                                    </div>
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">ASPECT OF THE USER CASE/SYSTEM TO BE SIMULATED</div>
-                                        <div class="subinputwrapper">
-                                            <div class="inputwrapper">
-                                                <div class="inputlabel">ASPECT TO BE SIMULATED:</div>
-                                                <textarea class="input" rows="4" cols="50" ng-model="model.simulation_aspect.aspect"></textarea>
+                                    <div ng-show="expandedModels.indexOf($index)>-1">
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel">MODEL NAME:</div>
+                                            <input class="input" type="text" ng-model="model.name"></input>
+                                        </div>
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel">ENTITY:</div>
+                                            <div class="setValue">{{model.type_entity.entity}}</div>
+                                        </div>
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel mainSectionSubSubTitle">
+                                                <span>ASPECT OF THE USER CASE/SYSTEM TO BE SIMULATED</span>
+                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedAspects.indexOf($index)<0" ng-click="expandAspect($index)">[SHOW]</button>
+                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedAspects.indexOf($index)>-1" ng-click="collapseAspect($index)">[HIDE]</button>
                                             </div>
-                                            <div class="inputwrapper">
-                                                <div class="inputlabel">MATERIAL:</div>
-                                                <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.material"></textarea>
-                                            </div>
-                                            <div class="inputwrapper">
-                                                <div class="inputlabel">GEOMETRY:</div>
-                                                <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.geomtry"></textarea>
-                                            </div>
-                                            <div class="inputwrapper">
-                                                <div class="inputlabel">TIME LAPSE:</div>
-                                                <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.time_lapse"></textarea>
-                                            </div>
-                                            <div class="inputwrapper">
-                                                <div class="inputlabel">MANUFACTURING PROCESS OR IN-SERVICE CONDITIONS:</div>
-                                                <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.manufacturing_process_conditions"></textarea>
-                                            </div>
-                                            <div class="inputwrapper nomarginbtm">
-                                                <div class="inputlabel">PUBLICATION(S) ON THIS DATA:</div>
-                                                <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.publications"></textarea>
+                                            <div class="subinputwrapper" ng-show="expandedAspects.indexOf($index)>-1">
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">ASPECT TO BE SIMULATED:</div>
+                                                    <textarea class="input" rows="4" cols="50" ng-model="model.simulation_aspect.aspect"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">MATERIAL:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.material"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">GEOMETRY:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.geomtry"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">TIME LAPSE:</div>
+                                                    <textarea class="input" rows="1" cols="40" ng-model="model.simulation_aspect.time_lapse"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">MANUFACTURING PROCESS OR IN-SERVICE CONDITIONS:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.simulation_aspect.manufacturing_process_conditions"></textarea>
+                                                </div>
+                                                <div class="inputwrapper nomarginbtm">
+                                                    <div class="inputlabel">PUBLICATION(S) ON THIS DATA:</div>
+                                                    <textarea class="input" rows="1" cols="40" ng-model="model.simulation_aspect.publications"></textarea>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">GENERIC PHYSICS OF THE MODEL EQUATION</div>
-                                        <div class="subinputwrapper">
-                                            <div class="inputlabel"><span>PHYSICS EQUATIONS | </span><button class="customBtn smallerBtn" ng-click="addphyseq(model)">ADD</button></div>
-                                            <div class="subinputwrapper">
-                                                <div class="entityWrapper" ng-repeat="physicseq in model.physics_equations track by $index">
-                                                    <div class="inputlabel" style="margin-bottom: 20px;">
-                                                        <span><b>EQUATION {{$index+1}} | </b></span>
-                                                        <button class="customBtn smallerBtn" ng-show="expandedPhysEqs.indexOf($index)<0" ng-click="expandphyseq($index)">EXPAND</button>
-                                                        <button class="customBtn smallerBtn" ng-show="expandedPhysEqs.indexOf($index)>-1" ng-click="collapsephyseq($index)">COLLAPSE</button>
-                                                        <button class="customBtn smallerBtn" ng-click="removephyseq(model, $index)" style="color: red">REMOVE</button>
-                                                    </div>
-                                                    <div ng-show="expandedPhysEqs.indexOf($index)>-1">
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel">MATHML EQUATION:</div>
-                                                            <textarea class="input" rows="4" cols="50" ng-model="physicseq.mathml_equation"></textarea>
-                                                            <div class="setValue" mathjax-bind="physicseq.mathml_equation"></div>
-                                                        </div>
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel">DESCRIPTION:</div>
-                                                            <textarea class="input" rows="4" cols="40" ng-model="physicseq.description"></textarea>
-                                                        </div>
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel">NAME:</div>
-                                                            <textarea class="input" rows="4" cols="40" ng-model="physicseq.name"></textarea>
-                                                        </div>
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel"><span>PHYSICS QUANTITIES | </span><button class="customBtn smallerBtn" ng-click="addphysquant(physicseq)">ADD</button></div>
-                                                            <div class="subinputwrapper">
-                                                                <div class="entityWrapper" ng-repeat="physicsquant in physicseq.physics_quantities">
-                                                                    <div class="inputlabel" style="margin-bottom: 20px;">
-                                                                        <span><b>QUANTITY {{$index+1}} | </b></span>
-                                                                        <button class="customBtn smallerBtn" ng-show="expandedPhysQuants.indexOf($index)<0" ng-click="expandphysquant($index)">EXPAND</button>
-                                                                        <button class="customBtn smallerBtn" ng-show="expandedPhysQuants.indexOf($index)>-1" ng-click="collapsephysquant($index)">COLLAPSE</button>
-                                                                        <button class="customBtn smallerBtn" ng-click="removephysquant(physicseq, $index)" style="color: red">REMOVE</button>
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel mainSectionSubSubTitle">
+                                                <span>GENERIC PHYSICS OF THE MODEL EQUATION</span>
+                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedGenPhysics.indexOf($index)<0" ng-click="expandGenPhysics($index)">[SHOW]</button>
+                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedGenPhysics.indexOf($index)>-1" ng-click="collapseGenPhysics($index)">[HIDE]</button>
+                                            </div>
+                                            <div ng-show="expandedGenPhysics.indexOf($index)>-1">
+                                                <div class="subinputwrapper">
+                                                    <div class="inputlabel"><span>PHYSICS EQUATIONS | </span><button class="customBtn smallerBtn" ng-click="addphyseq(model)">[ADD]</button></div>
+                                                    <div class="subinputwrapper">
+                                                        <div class="entityWrapper" ng-repeat="physicseq in model.physics_equations track by $index">
+                                                            <div class="inputlabel" style="margin-bottom: 20px;">
+                                                                <span><b>EQUATION {{$index+1}} | </b></span>
+                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedPhysEqs.indexOf($index)<0" ng-click="expandphyseq($index)">[SHOW]</button>
+                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedPhysEqs.indexOf($index)>-1" ng-click="collapsephyseq($index)">[HIDE]</button>
+                                                                <button class="customBtn smallerBtn" ng-click="removephyseq(model, $index)" style="color: red">[REMOVE]</button>
+                                                            </div>
+                                                            <div ng-show="expandedPhysEqs.indexOf($index)>-1">
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">PASTE MATHML EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
+                                                                    <textarea class="input" rows="1" cols="50" ng-model="physicseq.mathml_equation"></textarea>
+                                                                    <div class="subinputwrapper">
+                                                                        <div class="inputlabel">EQUATION:</div>
+                                                                        <div class="setValue" mathjax-bind="physicseq.mathml_equation"></div>
                                                                     </div>
-                                                                    <div ng-show="expandedPhysQuants.indexOf($index)>-1">
-                                                                        <div class="inputwrapper">
-                                                                            <div class="inputlabel">NAME:</div>
-                                                                            <input class="input" type="text" ng-model="physicsquant.name"></input>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">NAME:</div>
+                                                                    <textarea class="input" rows="1" cols="40" ng-model="physicseq.name" maxlength="40"></textarea>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">DESCRIPTION:</div>
+                                                                    <textarea class="input" rows="4" cols="40" ng-model="physicseq.description"></textarea>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel"><span>PHYSICS QUANTITIES | </span><button class="customBtn smallerBtn" ng-click="addphysquant(physicseq)">[ADD]</button></div>
+                                                                    <div class="subinputwrapper">
+                                                                        <div class="entityWrapper" ng-repeat="physicsquant in physicseq.physics_quantities">
+                                                                            <div class="inputlabel" style="margin-bottom: 20px;">
+                                                                                <span><b>QUANTITY {{$index+1}} | </b></span>
+                                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedPhysQuants.indexOf($index)<0" ng-click="expandphysquant($index)">[SHOW]</button>
+                                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedPhysQuants.indexOf($index)>-1" ng-click="collapsephysquant($index)">[HIDE]</button>
+                                                                                <button class="customBtn smallerBtn" ng-click="removephysquant(physicseq, $index)" style="color: red">[REMOVE]</button>
+                                                                            </div>
+                                                                            <div ng-show="expandedPhysQuants.indexOf($index)>-1">
+                                                                                <div class="inputwrapper">
+                                                                                    <div class="inputlabel">NAME:</div>
+                                                                                    <input class="input" type="text" ng-model="physicsquant.name"></input>
+                                                                                </div>
+                                                                                <div class="inputwrapper">
+                                                                                    <div class="inputlabel">DESCRIPTION:</div>
+                                                                                    <textarea class="input" rows="4" cols="40" ng-model="physicsquant.description"></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="inputwrapper">
-                                                                            <div class="inputlabel">DESCRIPTION:</div>
-                                                                            <textarea class="input" rows="4" cols="40" ng-model="physicsquant.description"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="subinputwrapper nomarginbtm">
+                                                    <div class="inputlabel"><span>MATERIALS RELATIONS | </span><button class="customBtn smallerBtn" ng-click="addmaterialsrel(model)">[ADD]</button></div>
+                                                    <div class="subinputwrapper">
+                                                        <div class="entityWrapper" ng-repeat="materialrel in model.materials_relations track by $index">
+                                                            <div class="inputlabel" style="margin-bottom: 20px;">
+                                                                <span><b>RELATION {{$index+1}} | </b></span>
+                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedMatRels.indexOf($index)<0" ng-click="expandmaterialsrel($index)">[SHOW]</button>
+                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedMatRels.indexOf($index)>-1" ng-click="collapsematerialsrel($index)">[HIDE]</button>
+                                                                <button class="customBtn smallerBtn" ng-click="removematerialsrel(model, $index)" style="color: red">[REMOVE]</button>
+                                                            </div>
+                                                            <div ng-show="expandedMatRels.indexOf($index)>-1">
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">PASTE MATHML EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
+                                                                    <textarea class="input" rows="1" cols="50" ng-model="materialrel.mathml_equation"></textarea>
+                                                                    <div class="subinputwrapper">
+                                                                        <div class="inputlabel">EQUATION:</div>
+                                                                        <div class="setValue" mathjax-bind="materialrel.mathml_equation"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">NAME:</div>
+                                                                    <textarea class="input" rows="1" cols="40" ng-model="materialrel.name"  maxlength="40"></textarea>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel">DESCRIPTION:</div>
+                                                                    <textarea class="input" rows="4" cols="40" ng-model="materialrel.description"></textarea>
+                                                                </div>
+                                                                <div class="inputwrapper">
+                                                                    <div class="inputlabel"><span>PHYSICS QUANTITIES | </span><button class="customBtn smallerBtn" ng-click="addmatquant(materialrel)">[ADD]</button></div>
+                                                                    <div class="subinputwrapper">
+                                                                        <div class="entityWrapper" ng-repeat="matquant in materialrel.material_quantities">
+                                                                            <div class="inputlabel" style="margin-bottom: 20px;">
+                                                                                <span><b>QUANTITY {{$index+1}} | </b></span>
+                                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedMatQuants.indexOf($index)<0" ng-click="expandmatquant($index)">[SHOW]</button>
+                                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedMatQuants.indexOf($index)>-1" ng-click="collapsematquantt($index)">[HIDE]</button>
+                                                                                <button class="customBtn smallerBtn" ng-click="removematquant(materialrel, $index)" style="color: red">[REMOVE]</button>
+                                                                            </div>
+                                                                            <div ng-show="expandedMatQuants.indexOf($index)>-1">
+                                                                                <div class="inputwrapper">
+                                                                                    <div class="inputlabel">NAME:</div>
+                                                                                    <input class="input" type="text" ng-model="material_quantities.name"></input>
+                                                                                </div>
+                                                                                <div class="inputwrapper">
+                                                                                    <div class="inputlabel">DESCRIPTION:</div>
+                                                                                    <textarea class="input" rows="4" cols="40" ng-model="material_quantities.description"></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -159,118 +252,75 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="subinputwrapper nomarginbtm">
-                                            <div class="inputlabel"><span>MATERIALS RELATIONS | </span><button class="customBtn smallerBtn" ng-click="addmaterialsrel(model)">ADD</button></div>
-                                            <div class="subinputwrapper">
-                                                <div class="entityWrapper" ng-repeat="materialrel in model.materials_relations track by $index">
-                                                    <div class="inputlabel" style="margin-bottom: 20px;">
-                                                        <span><b>RELATION {{$index+1}} | </b></span>
-                                                        <button class="customBtn smallerBtn" ng-show="expandedMatRels.indexOf($index)<0" ng-click="expandmaterialsrel($index)">EXPAND</button>
-                                                        <button class="customBtn smallerBtn" ng-show="expandedMatRels.indexOf($index)>-1" ng-click="collapsematerialsrel($index)">COLLAPSE</button>
-                                                        <button class="customBtn smallerBtn" ng-click="removematerialsrel(model, $index)" style="color: red">REMOVE</button>
-                                                    </div>
-                                                    <div ng-show="expandedMatRels.indexOf($index)>-1">
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel mainSectionSubSubTitle">
+                                                <span>SOLVER AND COMPUTATIONAL TRANSLATION OF THE SPECIFICATIONS</span>
+                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedSolverComps.indexOf($index)<0" ng-click="expandSolverComp($index)">[SHOW]</button>
+                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedSolverComps.indexOf($index)>-1" ng-click="collapseSolverComp($index)">[HIDE]</button>
+                                            </div>
+                                            <div class="subinputwrapper" ng-show="expandedSolverComps.indexOf($index)>-1">
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">NUMERICAL SOLVER:</div>
+                                                    <textarea class="input" rows="4" cols="50" ng-model="model.solver_comp_translation.numerical_solver"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">SOFTWARE TOOL:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.software_tool"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">TIME STEP:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.time_step"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">COMPUTATIONAL REPRESENTATION</div>
+                                                    <div class="subinputwrapper">
                                                         <div class="inputwrapper">
-                                                            <div class="inputlabel">MATHML EQUATION:</div>
-                                                            <textarea class="input" rows="4" cols="50" ng-model="materialrel.mathml_equation"></textarea>
-                                                            <div class="setValue" mathjax-bind="materialrel.mathml_equation"></div>
+                                                            <div class="inputlabel">PHYSICS EQUATION:</div>
+                                                            <textarea class="input" rows="4" cols="50" ng-model="model.solver_comp_translation.computational_representation.physics_equation"></textarea>
                                                         </div>
                                                         <div class="inputwrapper">
-                                                            <div class="inputlabel">DESCRIPTION:</div>
-                                                            <textarea class="input" rows="4" cols="40" ng-model="materialrel.description"></textarea>
+                                                            <div class="inputlabel">MATERIAL RELATIONS:</div>
+                                                            <textarea class="input" rows="4" cols="50" ng-model="model.solver_comp_translation.computational_representation.material_relations"></textarea>
                                                         </div>
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel">NAME:</div>
-                                                            <textarea class="input" rows="4" cols="40" ng-model="materialrel.name"></textarea>
-                                                        </div>
-                                                        <div class="inputwrapper">
-                                                            <div class="inputlabel"><span>PHYSICS QUANTITIES | </span><button class="customBtn smallerBtn" ng-click="addmatquant(materialrel)">ADD</button></div>
-                                                            <div class="subinputwrapper">
-                                                                <div class="entityWrapper" ng-repeat="matquant in materialrel.material_quantities">
-                                                                    <div class="inputlabel" style="margin-bottom: 20px;">
-                                                                        <span><b>QUANTITY {{$index+1}} | </b></span>
-                                                                        <button class="customBtn smallerBtn" ng-show="expandedMatQuants.indexOf($index)<0" ng-click="expandmatquant($index)">EXPAND</button>
-                                                                        <button class="customBtn smallerBtn" ng-show="expandedMatQuants.indexOf($index)>-1" ng-click="collapsematquantt($index)">COLLAPSE</button>
-                                                                        <button class="customBtn smallerBtn" ng-click="removematquant(materialrel, $index)" style="color: red">REMOVE</button>
-                                                                    </div>
-                                                                    <div ng-show="expandedMatQuants.indexOf($index)>-1">
-                                                                        <div class="inputwrapper">
-                                                                            <div class="inputlabel">NAME:</div>
-                                                                            <input class="input" type="text" ng-model="material_quantities.name"></input>
-                                                                        </div>
-                                                                        <div class="inputwrapper">
-                                                                            <div class="inputlabel">DESCRIPTION:</div>
-                                                                            <textarea class="input" rows="4" cols="40" ng-model="material_quantities.description"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <div class="inputwrapper nomarginbtm">
+                                                            <div class="inputlabel">MATERIAL:</div>
+                                                            <textarea class="input" rows="4" cols="50" ng-model="model.solver_comp_translation.computational_representation.material"></textarea>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">COMPUTATIONAL BOUNDARY CONDITIONS:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.computational_boundary_conditions"></textarea>
+                                                </div>
+                                                <div class="inputwrapper nomarginbtm">
+                                                    <div class="inputlabel">ADDITIONAL SOLVER PARAMETERS:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.additional_solver_params"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel mainSectionSubSubTitle">
+                                                <span>POST PROCESSING</span>
+                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedPostProcessings.indexOf($index)<0" ng-click="expandPostProcessing($index)">[SHOW]</button>
+                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedPostProcessings.indexOf($index)>-1" ng-click="collapsePostProcessing($index)">[HIDE]</button>
+                                            </div>
+                                            <div class="subinputwrapper" ng-show="expandedPostProcessings.indexOf($index)>-1">
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">THE PROCESSED OUTPUT:</div>
+                                                    <textarea class="input" rows="4" cols="50" ng-model="model.post_processing.processed_output"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">METHODOLOGIES:</div>
+                                                    <textarea class="input" rows="4" cols="40" ng-model="model.post_processing.methodologies"></textarea>
+                                                </div>
+                                                <div class="inputwrapper">
+                                                    <div class="inputlabel">MARGIN OF ERROR:</div>
+                                                    <input class="input" type="text" ng-model="model.post_processing.error_margin"></input>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inputwrapper">
-                        <div class="inputlabel">SOLVER AND COMPUTATIONAL TRANSLATION OF THE SPECIFICATIONS</div>
-                        <div class="subinputwrapper">
-                            <div class="inputwrapper">
-                                <div class="inputlabel">NUMERICAL SOLVER:</div>
-                                <textarea class="input" rows="4" cols="50" ng-model="modaData.solver_comp_translation.numerical_solver"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">SOFTWARE TOOL:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.solver_comp_translation.software_tool"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">TIME STEP:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.solver_comp_translation.time_step"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">COMPUTATIONAL REPRESENTATION</div>
-                                <div class="subinputwrapper">
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">PHYSICS EQUATION:</div>
-                                        <textarea class="input" rows="4" cols="50" ng-model="modaData.solver_comp_translation.computational_representation.physics_equation"></textarea>
-                                    </div>
-                                    <div class="inputwrapper">
-                                        <div class="inputlabel">MATERIAL RELATIONS:</div>
-                                        <textarea class="input" rows="4" cols="50" ng-model="modaData.solver_comp_translation.computational_representation.material_relations"></textarea>
-                                    </div>
-                                    <div class="inputwrapper nomarginbtm">
-                                        <div class="inputlabel">MATERIAL:</div>
-                                        <textarea class="input" rows="4" cols="50" ng-model="modaData.solver_comp_translation.computational_representation.material"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">COMPUTATIONAL BOUNDARY CONDITIONS:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.solver_comp_translation.computational_boundary_conditions"></textarea>
-                            </div>
-                            <div class="inputwrapper nomarginbtm">
-                                <div class="inputlabel">ADDITIONAL SOLVER PARAMETERS:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.solver_comp_translation.additional_solver_params"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inputwrapper">
-                        <div class="inputlabel">POST PROCESSING</div>
-                        <div class="subinputwrapper">
-                            <div class="inputwrapper">
-                                <div class="inputlabel">THE PROCESSED OUTPUT:</div>
-                                <textarea class="input" rows="4" cols="50" ng-model="modaData.post_processing.processed_output"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">METHODOLOGIES:</div>
-                                <textarea class="input" rows="4" cols="40" ng-model="modaData.post_processing.methodologies"></textarea>
-                            </div>
-                            <div class="inputwrapper">
-                                <div class="inputlabel">MARGIN OF ERROR:</div>
-                                <input class="input" type="text" ng-model="modaData.post_processing.error_margin"></input>
                             </div>
                         </div>
                     </div>

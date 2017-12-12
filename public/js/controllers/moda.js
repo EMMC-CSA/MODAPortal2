@@ -6,6 +6,19 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	$scope.expandedPhysQuants = [];
 	$scope.expandedMatRels = [];
 	$scope.expandedMatQuants = [];
+	$scope.expandedAspects = [];
+	$scope.expandedGenPhysics = [];
+	$scope.expandedSolverComps = [];
+	$scope.expandedPostProcessings = [];
+
+	$scope.ui = {
+		showOverview: false,
+		showWorkflow: false,
+		showModels: true,
+	}
+
+	$scope.addedModelsIndexes = [ 1,2,3];
+	$scope.multiSelectSettings = { template: '{{option}}', smartButtonTextConverter(skip, option) { return option; }, };
 
 	if ($scope.modaIdParam) {
 		ModasService.getModa(parseInt($scope.modaIdParam)).then(function(res) {
@@ -17,25 +30,31 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	} else{
 		$scope.modaData = {
 			simulation_overview: {},
-			models:[],
-			solver_comp_translation: {
-				computational_representation: {}
-			},
-			post_processing: {}
+			models:[]
 		};
-		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=equally; edge[constraint=false];}';
+		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=equally;}';
 	}
 
 	$scope.modelVariants = [
-	{id:1, name: "NAME 1", entity: "ENTITY 1"},
-	{id:2, name: "NAME 2", entity: "ENTITY 2"},
-	{id:3, name: "NAME 3", entity: "ENTITY 3"},
-	{id:4, name: "NAME 4", entity: "ENTITY 4"}
+	{id:1, type: "TYPE 1", entity: "ENTITY 1"},
+	{id:2, type: "TYPE 2", entity: "ENTITY 2"},
+	{id:3, type: "TYPE 3", entity: "ENTITY 3"},
+	{id:4, type: "TYPE 4", entity: "ENTITY 4"}
 	]; 
 
-	// d3.graphviz("#graphVizContainer")
-	// .fade(false)
-	// .renderDot('digraph G {rankdir=LR; splines="ortho"; ranksep=1.5; nodesep=2; subgraph cluster_0 {node [style=filled] a0[fillcolor="#e07b7b" label="a very long label"];a0 -> a1 -> a2 -> a3;label = "MODEL #1";}subgraph cluster_1 {node [style=filled];b0 -> b1 -> b2 -> b3;label = "MODEL #2";} edge[constraint=false]; a3->b1;}');
+
+	$scope.toggleOverview = function(){
+		$scope.ui.showOverview = !$scope.ui.showOverview;
+	}
+
+
+	$scope.toggleWorkflow = function(){
+		$scope.ui.showWorkflow = !$scope.ui.showWorkflow;
+	}
+
+	$scope.toggleModels = function(){
+		$scope.ui.showModels = !$scope.ui.showModels;
+	}
 
 	$scope.mathmltext= function(html_code){       
 		return $sce.trustAsHtml(html_code);
@@ -45,11 +64,12 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	}
 
 	$scope.regenerateworkflow = function(){
+		$scope.ui.showWorkflow = true;
 		$scope.modaData.workflowDOT = 'digraph G {rankdir="LR"; splines="ortho"; ranksep=equally; nodesep=equally; ratio=auto; compound=true; fontname=Courier; centre=true; fixedsize=true; edge[constraint=false]; }';
 
 		for (var i = 0; i < $scope.modaData.models.length; i++) {
 			var model = $scope.modaData.models[i];
-			var modelNum = i+1;
+			var modelNum = model.number;
 			var nodeNames = []
 			for(var j=0; j<4; j++){
 				var name = 'n' + modelNum + '_' + j;
@@ -68,7 +88,26 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 				var thisNodeModelName = 'n' + modelNum + '_3';
 				relStr += thisNodeModelName+'->'+linkedNodeModelName+'; ';
 			}
+			insertPos = $scope.modaData.workflowDOT.lastIndexOf("}")-1;
+			output = [$scope.modaData.workflowDOT.slice(0, insertPos), relStr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
+			$scope.modaData.workflowDOT = output;
 
+			relStr = '';
+			var tempStr = "";
+			for (var l=0; l<model.couple_to_models.length; l++){
+				var coupledModelNum = model.couple_to_models[l];
+				var coupleNodeModelName = 'n' + coupledModelNum + '_1';
+				var thisNodeModelName = 'n' + modelNum + '_3';
+				tempStr = thisNodeModelName+'->'+coupleNodeModelName+'; ';
+				if($scope.modaData.workflowDOT.indexOf(tempStr) < 0)
+					relStr += tempStr;
+
+				var coupleNodeModelName = 'n' + coupledModelNum + '_3';
+				var thisNodeModelName = 'n' + modelNum + '_1';
+				tempStr = coupleNodeModelName+'->'+thisNodeModelName+'; ';
+				if($scope.modaData.workflowDOT.indexOf(tempStr) < 0)
+					relStr += tempStr;
+			}
 			insertPos = $scope.modaData.workflowDOT.lastIndexOf("}")-1;
 			output = [$scope.modaData.workflowDOT.slice(0, insertPos), relStr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
 			$scope.modaData.workflowDOT = output;
@@ -80,11 +119,64 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		.renderDot($scope.modaData.workflowDOT);
 	}
 
+	$scope.hasCoupled = function(model, index){
+		var coupledIndex = index + 1;
+		if(model.couple_to_models.indexOf(coupledIndex) > -1)
+			return true
+		else
+			return false
+	}
+
+	$scope.modifyCoupling = function(model){
+		var thisModelNum = model.number;
+
+		//uncouple
+		for (var i=0; i<$scope.modaData.models.length; i++){
+			if (i !== model.index){
+				var mmodel = $scope.modaData.models[i];
+				if(mmodel.couple_to_models.indexOf(thisModelNum) > -1){
+					mmodel.couple_to_models.splice(mmodel.couple_to_models.indexOf(thisModelNum), 1);
+				}
+			}
+		}
+		
+		//couple
+		for (var j=0; j < model.couple_to_models.length; j++){
+			var coupledModelIndex = model.couple_to_models[j]-1;
+			if($scope.modaData.models[coupledModelIndex].couple_to_models.indexOf(thisModelNum) < 0)
+				$scope.modaData.models[coupledModelIndex].couple_to_models.push(thisModelNum);
+
+			// remove indivudal links
+			if(model.link_to_models.indexOf(model.couple_to_models[j]) > -1)
+				model.link_to_models.splice(model.link_to_models.indexOf(model.couple_to_models[j]), 1);
+			if($scope.modaData.models[coupledModelIndex].link_to_models.indexOf(thisModelNum) > -1){
+				var linkedModelIndex = $scope.modaData.models[coupledModelIndex].link_to_models.indexOf(thisModelNum);
+				$scope.modaData.models[coupledModelIndex].link_to_models.splice(linkedModelIndex, 1);
+			}
+		}
+	}
+
+	$scope.skipValues = function(model, flag) {
+		return function(value, index, array) {
+			if(flag == 1)
+				return model.index !== index && !$scope.hasCoupled(model, index);
+			else
+				return model.index !== index;
+		}
+	};
+
 	$scope.addmodel = function() {
 		var model = {
-			link_to_models: []
+			link_to_models: [],
+			couple_to_models: [],
+			solver_comp_translation: {
+				computational_representation: {}
+			},
+			post_processing: {}
 		};
-		$scope.modaData.models.push(model);
+		var index = $scope.modaData.models.push(model) - 1;
+		model.index = index;
+		model.number = index+1;
 	}
 	$scope.removemodel = function(index) {
 		$scope.modaData.models.splice(index, 1);
@@ -97,11 +189,40 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		$scope.expandedModels.splice($scope.expandedModels.indexOf(index), 1);
 	}
 
+	$scope.expandAspect = function(index){
+		$scope.expandedAspects.push(index);
+	}
+	$scope.collapseAspect = function(index){
+		$scope.expandedAspects.splice($scope.expandedAspects.indexOf(index), 1);
+	}
+
+	$scope.expandGenPhysics = function(index){
+		$scope.expandedGenPhysics.push(index);
+	}
+	$scope.collapseGenPhysics = function(index){
+		$scope.expandedGenPhysics.splice($scope.expandedGenPhysics.indexOf(index), 1);
+	}
+
+	$scope.expandSolverComp = function(index){
+		$scope.expandedSolverComps.push(index);
+	}
+	$scope.collapseSolverComp  = function(index){
+		$scope.expandedSolverComps.splice($scope.expandedSolverComps.indexOf(index), 1);
+	}
+
+	$scope.expandPostProcessing = function(index){
+		$scope.expandedPostProcessings.push(index);
+	}
+	$scope.collapsePostProcessing = function(index){
+		$scope.expandedPostProcessings.splice($scope.expandedPostProcessings.indexOf(index), 1);
+	}
+
 	$scope.addphyseq = function(model) {
 		var physeq = {};
 		if(!model.physics_equations)
 			model.physics_equations = [];
-		model.physics_equations.push(physeq);
+		var index = model.physics_equations.push(physeq) - 1;
+		$scope.expandphyseq(index);
 	}
 	$scope.removephyseq = function(model, index) {
 		model.physics_equations.splice(index, 1);
@@ -119,7 +240,8 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		if(!physicseq.physics_quantities){
 			physicseq.physics_quantities = [];
 		}
-		physicseq.physics_quantities.push(physquant);
+		var index = physicseq.physics_quantities.push(physquant) - 1;
+		$scope.expandphysquant(index);
 	}
 	$scope.removephysquant = function(physicseq, index) {
 		physicseq.physics_quantities.splice(index, 1);
@@ -137,7 +259,8 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		if(!model.materials_relations){
 			model.materials_relations = [];
 		}
-		model.materials_relations.push(materialrel);
+		var index = model.materials_relations.push(materialrel) - 1;
+		$scope.expandmaterialsrel(index);
 	}
 	$scope.removematerialsrel = function(model, index) {
 		model.materials_relations.splice(index, 1);
@@ -156,7 +279,8 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		if(!materialrel.material_quantities){
 			materialrel.material_quantities = [];
 		}
-		materialrel.material_quantities.push(matquant);
+		var index = materialrel.material_quantities.push(matquant) - 1;
+		$scope.expandmatquant(index);
 	}
 	$scope.removematquant = function(materialrel, index) {
 		materialrel.material_quantities.splice(index, 1);
@@ -168,7 +292,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	$scope.collapsematquantt = function(index){
 		$scope.expandedMatQuants.splice($scope.expandedMatQuants.indexOf(index), 1);
 	}
-	
+
 
 	$scope.save = function(){
 		$scope.$emit('showloading', true);

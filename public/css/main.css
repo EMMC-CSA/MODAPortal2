@@ -177,30 +177,6 @@ h5 {
     font-size: 1vw;
 }
 
-#postingEditFileUpload {
-    font-size: 0.9em;
-    margin-left: 2.5em;
-}
-
-#removePostingFile {
-    border-left: 1px solid rgba(190, 190, 190, 0.3);
-    font-size: 4.5vw;
-    cursor: pointer;
-    cursor: hand;
-    padding-left: 0.1em;
-    margin-left: 0.3em;
-    color: red;
-}
-
-#removeEditPostingFile {
-    border-left: 1px solid rgba(190, 190, 190, 0.3);
-    font-size: 1.5em;
-    cursor: pointer;
-    cursor: hand;
-    padding-left: 0.1em;
-    margin-left: 0.1em;
-    color: red;
-}
 
 .formContainer {
     width: 97.5%;
@@ -212,7 +188,14 @@ h5 {
 
 #graphVizContainer{
     text-align: center;
-    width:90%;
+    color: #a1a1a1;
+    width:85%;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(130, 130, 130, 0.9);
+    padding: 10px 0 10px 0;
 }
 
 .hContent{
@@ -222,8 +205,24 @@ h5 {
     flex-direction: row;
 }
 
+.mainSectionTitle{
+    font-size: 1.8vw !important;
+    color: black !important;
+}
+
+
+.mainSectionSubTitle{
+    font-size: 1.6vw !important;
+    color: black !important;
+}
+
+.mainSectionSubSubTitle{
+    font-size: 1.4vw !important;
+    color: black !important;
+}
+
 .input {
-    font-size: 1.8vw;
+    font-size: 1.5vw;
     width: 90%;
     color: black;
     font-family: 'Roboto Mono', sans-serif;
@@ -249,13 +248,13 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .multiInput{
-    width: 7%;
+    width: 33px;
 }
 
 .inputwrapper{
     display: flex;
     flex-direction: column;
-    margin-bottom: 70px;
+    margin-bottom: 45px;
 }
 
 .inputwrapperH{
@@ -267,6 +266,15 @@ input[type=number]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     padding: 15px 0px 0 25px;
+    margin-bottom: 5px;
+}
+
+.showBtn{
+    color: #245f77;
+}
+
+.hideBtn{
+    color: #c05c33;
 }
 
 .inputlabel{
@@ -295,7 +303,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .setValue{
     width: 90%;
-    color: #a1a1a1;
+    color: black;
     font-family: 'Roboto Mono', sans-serif;
     font-weight: 300;
     font-size: 1.8vw;
@@ -324,7 +332,11 @@ button {
 }
 
 .autoWidth{
-    width: auto;
+    width: auto !important;
+}
+
+.typeHeight {
+    height: 30px !important;
 }
 
 .entityWrapper{

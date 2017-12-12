@@ -45,7 +45,7 @@
 
   function getTranslation(g) {
       var transform = g.node().transform;
-      if  (transform && transform.baseVal.length != 0) {
+      if  (transform && transform.baseVal.length != 0 && transform.baseVal.consolidate()) {
           var matrix = transform.baseVal.consolidate().matrix;
           return {x: matrix.e, y: matrix.f};
       } else {
