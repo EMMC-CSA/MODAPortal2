@@ -2,7 +2,9 @@ angular.module('app.controllers', []).controller('mainCtrl', function($scope, $l
     $scope.loggedin = AuthService.isLoggedIn();
     $scope.showLoading = false;
     $scope.showErr = false;
+    $scope.showMsg = false;
     $scope.errMsg = "";
+    $scope.regMsg = "";
     
     $scope.$on('simulateClick', function(event, data) {
         $timeout(function() {
@@ -19,6 +21,14 @@ angular.module('app.controllers', []).controller('mainCtrl', function($scope, $l
         $scope.showErr = data;
         $timeout(function() {
             $scope.showErr = false;
+        }, 2000);
+    });
+
+    $scope.$on('showMsg', function(event, data, msg) {
+        $scope.regMsg = msg;
+        $scope.showMsg = data;
+        $timeout(function() {
+            $scope.showMsg = false;
         }, 2000);
     });
 

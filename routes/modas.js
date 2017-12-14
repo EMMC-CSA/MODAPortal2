@@ -22,7 +22,8 @@ router.post('/', authHelpers.loginRequired, upload.single('file'), (req, res, ne
     .then(function(data) {
         res.status(201).json({
             status: 'success',
-            message: 'moda created'
+            message: 'moda created',
+            data: data
         });
     })
     .catch(function(err) {

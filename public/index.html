@@ -24,10 +24,13 @@
       MathJax.Hub.Config({
       MathML: {
       extensions: ["content-mathml.js"]
-  }
+  },
+  tex2jax: {
+  inlineMath: [['$','$'], ['\\(','\\)']]
+}
 });
 </script>
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="/js/_lib/angular.js"></script>
 <script type="text/javascript" src="/js/_lib/angular-sanitize.js"></script>
 <script type="text/javascript" src="/js/_lib/angular-route.js"></script>
@@ -68,6 +71,7 @@
     </header>
     <div id="loadingMsg" ng-if="showLoading">LOADING...</div>
     <div id="errMsg" ng-if="showErr">{{errMsg}}</div>
+    <div id="regMsg" ng-if="showMsg">{{regMsg}}</div>
     <div class="container space-between" ng-view>
     </div>
     <footer>

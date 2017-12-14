@@ -3,7 +3,8 @@
         <div class="subsectionContainer">
             <div class="sectionHeader">
                 <button class="customBtn" ng-click="save()">SAVE</button>
-                <button class="customBtn cancelBtn" ng-click="go('/modas')">CANCEL</button>
+                <button class="customBtn"> / </button>
+                <button class="customBtn cancelBtn" ng-click="go('/modas')">MODA DASHBOARD</button>
             </div>
             <div class="subsectionContent">
                 <form name="modaForm" id="modaForm">
@@ -51,6 +52,7 @@
                                 <span>MODA WORKFLOW PLOT |</span>
                                 <button class="customBtn smallerBtn showBtn" ng-show="!ui.showWorkflow" ng-click="toggleWorkflow()">[SHOW]</button>
                                 <button class="customBtn smallerBtn hideBtn" ng-show="ui.showWorkflow" ng-click="toggleWorkflow()">[HIDE]</button>
+                                <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
                             </div>
                             <div class="subinputwrapper" ng-show="ui.showWorkflow">
                                 <div id="graphVizContainer">WORKFLOW PLOT WILL BE GENERATED HERE AS YOU ADD AND CONNECT (LINK/COUPLE) MODELS</div>
@@ -61,8 +63,8 @@
                                 <span>MODELS | </span>
                                 <button class="customBtn smallerBtn showBtn" ng-show="!ui.showModels" ng-click="toggleModels()">[SHOW]</button>
                                 <button class="customBtn smallerBtn hideBtn" ng-show="ui.showModels" ng-click="toggleModels()">[HIDE]</button>
-                                <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
                                 <button class="customBtn smallerBtn" ng-show="ui.showModels" ng-click="addmodel()">[ADD MODEL]</button>
+                                <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
                             </div>
                             <div class="inputsublabel">
                                 Click SHOW / HIDE on each section to toggle visibility
@@ -96,7 +98,7 @@
                                     <div ng-show="expandedModels.indexOf($index)>-1">
                                         <div class="inputwrapper">
                                             <div class="inputlabel">MODEL NAME:</div>
-                                            <input class="input" type="text" ng-model="model.name"></input>
+                                            <input class="input" type="text" ng-model="model.name" maxlength="40"></input>
                                         </div>
                                         <div class="inputwrapper">
                                             <div class="inputlabel">ENTITY:</div>
@@ -154,11 +156,11 @@
                                                             </div>
                                                             <div ng-show="expandedPhysEqs.indexOf($index)>-1">
                                                                 <div class="inputwrapper">
-                                                                    <div class="inputlabel">PASTE MATHML EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
-                                                                    <textarea class="input" rows="1" cols="50" ng-model="physicseq.mathml_equation"></textarea>
+                                                                    <div class="inputlabel">PASTE MATHML/LATEX EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
+                                                                    <textarea class="input" rows="1" cols="50" ng-model="physicseq.mathml_tex_equation"></textarea>
                                                                     <div class="subinputwrapper">
                                                                         <div class="inputlabel">EQUATION:</div>
-                                                                        <div class="setValue" mathjax-bind="physicseq.mathml_equation"></div>
+                                                                        <div class="setValue" mathjax-bind="physicseq.mathml_tex_equation"></div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="inputwrapper">
@@ -181,12 +183,15 @@
                                                                             </div>
                                                                             <div ng-show="expandedPhysQuants.indexOf($index)>-1">
                                                                                 <div class="inputwrapper">
-                                                                                    <div class="inputlabel">NAME:</div>
-                                                                                    <input class="input" type="text" ng-model="physicsquant.name"></input>
+                                                                                    <div class="inputlabel">MATH SYMBOL:</div>
+                                                                                    <input class="input" type="text" ng-model="physicsquant.math_symbol"></input>
+                                                                                    <div class="subinputwrapper">
+                                                                                        <div class="setValue" mathjax-bind="physicsquant.math_symbol"></div>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="inputwrapper">
                                                                                     <div class="inputlabel">DESCRIPTION:</div>
-                                                                                    <textarea class="input" rows="4" cols="40" ng-model="physicsquant.description"></textarea>
+                                                                                    <textarea class="input" rows="1" cols="40" ng-model="physicsquant.description"></textarea>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -208,11 +213,11 @@
                                                             </div>
                                                             <div ng-show="expandedMatRels.indexOf($index)>-1">
                                                                 <div class="inputwrapper">
-                                                                    <div class="inputlabel">PASTE MATHML EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
-                                                                    <textarea class="input" rows="1" cols="50" ng-model="materialrel.mathml_equation"></textarea>
+                                                                    <div class="inputlabel">PASTE MATHML/LATEX EQUATION: <a href="https://stemreader.org.uk/support/copy-word-equation/" target="_blank">[HOW-TO IN MICROSOFT WORD]</a></div>
+                                                                    <textarea class="input" rows="1" cols="50" ng-model="materialrel.mathml_tex_equation"></textarea>
                                                                     <div class="subinputwrapper">
                                                                         <div class="inputlabel">EQUATION:</div>
-                                                                        <div class="setValue" mathjax-bind="materialrel.mathml_equation"></div>
+                                                                        <div class="setValue" mathjax-bind="materialrel.mathml_tex_equation"></div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="inputwrapper">
@@ -235,12 +240,15 @@
                                                                             </div>
                                                                             <div ng-show="expandedMatQuants.indexOf($index)>-1">
                                                                                 <div class="inputwrapper">
-                                                                                    <div class="inputlabel">NAME:</div>
-                                                                                    <input class="input" type="text" ng-model="material_quantities.name"></input>
+                                                                                    <div class="inputlabel">MATH SYMBOL:</div>
+                                                                                    <input class="input" type="text" ng-model="matquant.math_symbol"></input>
+                                                                                    <div class="subinputwrapper">
+                                                                                        <div class="setValue" mathjax-bind="matquant.math_symbol"></div>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="inputwrapper">
                                                                                     <div class="inputlabel">DESCRIPTION:</div>
-                                                                                    <textarea class="input" rows="4" cols="40" ng-model="material_quantities.description"></textarea>
+                                                                                    <textarea class="input" rows="1" cols="40" ng-model="matquant.description"></textarea>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -261,15 +269,15 @@
                                             <div class="subinputwrapper" ng-show="expandedSolverComps.indexOf($index)>-1">
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">NUMERICAL SOLVER:</div>
-                                                    <textarea class="input" rows="4" cols="50" ng-model="model.solver_comp_translation.numerical_solver"></textarea>
+                                                    <textarea class="input" rows="1" cols="50" ng-model="model.solver_comp_translation.numerical_solver"></textarea>
                                                 </div>
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">SOFTWARE TOOL:</div>
-                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.software_tool"></textarea>
+                                                    <textarea class="input" rows="1" cols="40" ng-model="model.solver_comp_translation.software_tool"></textarea>
                                                 </div>
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">TIME STEP:</div>
-                                                    <textarea class="input" rows="4" cols="40" ng-model="model.solver_comp_translation.time_step"></textarea>
+                                                    <textarea class="input" rows="1" cols="40" ng-model="model.solver_comp_translation.time_step"></textarea>
                                                 </div>
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">COMPUTATIONAL REPRESENTATION</div>

@@ -24,7 +24,9 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		ModasService.getModa(parseInt($scope.modaIdParam)).then(function(res) {
 			$scope.modaData = res.data.data.data;
 			$scope.modaId = res.data.data.id;
+			angular.element(document.querySelector('#graphVizContainer')).empty();
 			d3.select("#graphVizContainer").graphviz()
+			.zoom(false)
 			.renderDot($scope.modaData.workflowDOT);
 		});
 	} else{
@@ -63,20 +65,52 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		$location.path( path );
 	}
 
+	$scope.splitintolines = function(text, linewidth){
+		text = text.length < 90 ? text : text.substring(0, 90) + "...";
+		var words = text.split(' ');
+		var line = "";
+		var outputstr = "";
+		var carry = "";
+		for(var i=0; i<words.length || carry.length>0; i++){
+			var word = i < words.length ? words[i] : "";
+			line += carry;
+			if(line.length<linewidth){
+				if(word.length<=(linewidth-line.length)){
+					line += word + " ";
+					carry = "";
+				} else {
+					carry = word.substring(linewidth-line.length, word.length) + " ";
+					line += word.substring(0,linewidth-line.length) + "-\n";
+					outputstr += line + "\n";
+					line = "";
+				}
+				if(i >= words.length-1 && carry.length == 0)
+					outputstr += line + "\n";
+			} else {
+				outputstr += line + "\n";
+				line = "";
+			}
+		}
+		return outputstr;
+	}
+
 	$scope.regenerateworkflow = function(){
-		$scope.ui.showWorkflow = true;
-		$scope.modaData.workflowDOT = 'digraph G {rankdir="LR"; splines="ortho"; ranksep=equally; nodesep=equally; ratio=auto; compound=true; fontname=Courier; centre=true; fixedsize=true; edge[constraint=false]; }';
+		$scope.modaData.workflowDOT = 'digraph G {rankdir="LR"; splines="ortho"; ranksep=equally; nodesep=equally; ratio=auto; compound=true; fontname=Courier; center=true; edge[constraint=false]; }';
+
 
 		for (var i = 0; i < $scope.modaData.models.length; i++) {
 			var model = $scope.modaData.models[i];
 			var modelNum = model.number;
+			var modelShortName = $scope.splitintolines(model.name,25);
+			var modelShortProcess = $scope.splitintolines(model.simulation_aspect.manufacturing_process_conditions ? model.simulation_aspect.manufacturing_process_conditions : "",25);
+			var modelShortOutput = $scope.splitintolines(model.post_processing.processed_output ? model.post_processing.processed_output : "",25);
 			var nodeNames = []
 			for(var j=0; j<4; j++){
 				var name = 'n' + modelNum + '_' + j;
 				nodeNames.push(name);
 			}
 
-			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=1.8, height=1.1] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="user case input"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="model'+ modelNum +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="raw output"] ' + nodeNames[3] + '[fillcolor="#d6fdd0" label="processed output"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
+			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=2.6, height=1.5, fixedsize=true] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="' + modelShortProcess + '"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="'+ modelShortName +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="See Quantities of PEs"]' + nodeNames[3] + '[fillcolor="#d6fdd0" label="' + modelShortOutput + '"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
 			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=equally;")+17;
 			var output = [$scope.modaData.workflowDOT.slice(0, insertPos), DOTstr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
 			$scope.modaData.workflowDOT = output;
@@ -116,6 +150,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		angular.element(document.querySelector('#graphVizContainer')).empty();
 
 		d3.select("#graphVizContainer").graphviz()
+		.zoom(false)
 		.renderDot($scope.modaData.workflowDOT);
 	}
 
@@ -169,6 +204,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		var model = {
 			link_to_models: [],
 			couple_to_models: [],
+			simulation_aspect: {},
 			solver_comp_translation: {
 				computational_representation: {}
 			},
@@ -296,11 +332,12 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 
 	$scope.save = function(){
 		$scope.$emit('showloading', true);
+		$scope.regenerateworkflow();
 		if ($scope.modaIdParam && $scope.modaId){
 			ModasService.updateModa($scope.modaData, $scope.modaId).then(function(res) {
 				$scope.$emit('showloading', false);
 				if (res.status == 200) {
-					$location.path('/modas');
+					$scope.$emit('showMsg', true, "SAVED");
 				} else {
 					$scope.$emit('showErr', true, "something went wrong. please retry");
 				}
@@ -309,7 +346,8 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			ModasService.addModa($scope.modaData).then(function(res) {
 				$scope.$emit('showloading', false);
 				if (res.status == 201) {
-					$location.path('/modas');
+					var path = "/modas/" + res.data.data.id;
+					$scope.go(path);
 				} else {
 					$scope.$emit('showErr', true, "something went wrong. please retry");
 				}
