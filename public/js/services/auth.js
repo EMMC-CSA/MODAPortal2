@@ -75,7 +75,6 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
         .then(function(res) {
             return res;
         }, function(res) {
-            console.log(res);
             return res;
         });
     }

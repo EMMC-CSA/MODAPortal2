@@ -73,14 +73,15 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		var carry = "";
 		for(var i=0; i<words.length || carry.length>0; i++){
 			var word = i < words.length ? words[i] : "";
+			console.log(word);
 			line += carry;
-			if(line.length<linewidth){
+			if(line.length<=linewidth){
 				if(word.length<=(linewidth-line.length)){
 					line += word + " ";
 					carry = "";
 				} else {
 					carry = word.substring(linewidth-line.length, word.length) + " ";
-					line += word.substring(0,linewidth-line.length) + "-\n";
+					line += word.substring(0,linewidth-line.length) + "-";
 					outputstr += line + "\n";
 					line = "";
 				}
@@ -97,20 +98,19 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	$scope.regenerateworkflow = function(){
 		$scope.modaData.workflowDOT = 'digraph G {rankdir="LR"; splines="ortho"; ranksep=equally; nodesep=equally; ratio=auto; compound=true; fontname=Courier; center=true; edge[constraint=false]; }';
 
-
 		for (var i = 0; i < $scope.modaData.models.length; i++) {
 			var model = $scope.modaData.models[i];
 			var modelNum = model.number;
-			var modelShortName = $scope.splitintolines(model.name,25);
-			var modelShortProcess = $scope.splitintolines(model.simulation_aspect.manufacturing_process_conditions ? model.simulation_aspect.manufacturing_process_conditions : "",25);
-			var modelShortOutput = $scope.splitintolines(model.post_processing.processed_output ? model.post_processing.processed_output : "",25);
+			var modelShortName = $scope.splitintolines(model.name ? model.name : "",33);
+			var modelShortProcess = $scope.splitintolines(model.simulation_aspect.manufacturing_process_conditions ? model.simulation_aspect.manufacturing_process_conditions : "",33);
+			var modelShortOutput = $scope.splitintolines(model.post_processing.processed_output ? model.post_processing.processed_output : "",33);
 			var nodeNames = []
 			for(var j=0; j<4; j++){
 				var name = 'n' + modelNum + '_' + j;
 				nodeNames.push(name);
 			}
 
-			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=2.6, height=1.5, fixedsize=true] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="' + modelShortProcess + '"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="'+ modelShortName +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="See Quantities of PEs"]' + nodeNames[3] + '[fillcolor="#d6fdd0" label="' + modelShortOutput + '"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
+			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=2.5, height=1.5, fixedsize=true] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="' + modelShortProcess + '"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="'+ modelShortName +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="See Quantities of PEs"]' + nodeNames[3] + '[fillcolor="#d6fdd0" label="' + modelShortOutput + '"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
 			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=equally;")+17;
 			var output = [$scope.modaData.workflowDOT.slice(0, insertPos), DOTstr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
 			$scope.modaData.workflowDOT = output;

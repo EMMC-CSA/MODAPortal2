@@ -70,8 +70,8 @@
      function(event, next, current) {
        if (next.access.restricted) {
          var nextPath = next.originalPath;
-         if (nextPath == "/:modaIdParam") {
-           nextPath = "/" + next.params.modaIdParam;
+         if (nextPath == "/modas/:modaIdParam") {
+           nextPath = "/modas/" + next.params.modaIdParam;
          }
          if (!AuthService.isLoggedIn()) {
           $location.path('/login').search({ next: nextPath.substring(1) });

@@ -31,8 +31,9 @@ router.post('/login', authHelpers.loginRedirect, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             handleErrResponse(res, err.message == "No data returned from the query." ? 404 : 500, err.message);
-        }
-        if (user) {
+        } else if (info && info.status == "error"){
+            handleErrResponse(res, info.statuscode, info.message);
+        } else if (user) {
             req.logIn(user, function(err) {
                 if (err) {
                     handleErrResponse(res, 401, 'failed to login');
