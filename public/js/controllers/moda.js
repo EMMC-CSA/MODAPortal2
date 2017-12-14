@@ -73,7 +73,6 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		var carry = "";
 		for(var i=0; i<words.length || carry.length>0; i++){
 			var word = i < words.length ? words[i] : "";
-			console.log(word);
 			line += carry;
 			if(line.length<=linewidth){
 				if(word.length<=(linewidth-line.length)){

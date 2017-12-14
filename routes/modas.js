@@ -27,13 +27,12 @@ router.post('/', authHelpers.loginRequired, upload.single('file'), (req, res, ne
         });
     })
     .catch(function(err) {
-        console.log(err);
         handleErrResponse(res, 400, err.message);
     });
 });
 
 router.get('/usermodas/:offset(\\d+)', authHelpers.loginRequired, (req, res, next) => {
-    db.any('SELECT * FROM modas WHERE deleted = false AND user_id=$1 ORDER BY date_added desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
+    db.any('SELECT * FROM modas WHERE user_id=$1 ORDER BY date_added desc, deleted desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
     .then(function(data) {
         res.status(200)
         .json({
@@ -49,7 +48,7 @@ router.get('/usermodas/:offset(\\d+)', authHelpers.loginRequired, (req, res, nex
 
 router.get('/all/:offset(\\d+)', authHelpers.loginRequired, (req, res, next) => {
     // check if user is admin
-    db.any('SELECT * FROM modas WHERE deleted = false  AND user_id=$1 ORDER BY date_added desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
+    db.any('SELECT * FROM modas WHERE user_id=$1 ORDER BY date_added desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
     .then(function(data) {
         res.status(200)
         .json({
@@ -63,7 +62,7 @@ router.get('/all/:offset(\\d+)', authHelpers.loginRequired, (req, res, next) => 
 });
 
 router.get('/:id(\\d+)', (req, res, next) => {
-    db.one('SELECT * FROM modas WHERE deleted = false AND id = $1', parseInt(req.params.id))
+    db.one('SELECT * FROM modas WHERE id = $1', parseInt(req.params.id))
     .then(function(data) {
         res.status(200)
         .json({

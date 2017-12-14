@@ -32,7 +32,6 @@ angular.module('app.controllers').controller('loginCtrl', function($scope, $loca
         if($scope.user.email && $scope.user.password && !$scope.warnEmail && !$scope.warnPass){
             $scope.$emit('showloading', true);
             AuthService.login($scope.user.email, $scope.user.password).then(function(res) {
-                console.log(res);
                 $scope.$emit('showloading', false);
                 if (res.status == 200) {
                     $scope.$emit('loggedIn', res.data.data);

@@ -33,7 +33,6 @@ router.get('/:id(\\d+)', authHelpers.loginRequired, (req, res, next) => {
             });
         })
         .catch(function(err) {
-            console.log(err);
             handleErrResponse(res, 400, err.message);
         });
     } else {

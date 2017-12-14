@@ -13,7 +13,7 @@ angular.module('app.controllers').controller('modasCtrl', function($scope, $time
 		$scope.modas = res.data.data;
 		$scope.$emit('showloading', false);
 		if (res.status  == 400){
-			console.log(res);
+			$scope.$emit('showErr', true, "something went wrong. please retry");
 		}
 	});
 
@@ -22,10 +22,28 @@ angular.module('app.controllers').controller('modasCtrl', function($scope, $time
 		$scope.$emit('showloading', true);
 		ModasService.getUserModas($scope.modasOffset).then(function(res) {
 			$scope.$emit('showloading', false);
-			if (res.data.data.length == 0) {
-				$scope.fetchedAllModas = true;
+			if (res.status == 200) {
+				if (res.data.data.length == 0) {
+					$scope.fetchedAllModas = true;
+				}
+				$scope.modas = $scope.modas.concat(res.data.data);
+			} else {
+				$scope.$emit('showErr', true, "something went wrong. please retry");
 			}
-			$scope.modas = $scope.modas.concat(res.data.data);
+		});
+	}
+
+
+	$scope.deleteModa = function(index) {
+		var moda = $scope.modas[index];
+		$scope.$emit('showloading', true);
+		ModasService.deleteModa(moda.id).then(function(res) {
+			$scope.$emit('showloading', false);
+			if (res.status == 200) {
+				moda.deleted = true;
+			} else {
+				$scope.$emit('showErr', true, "something went wrong. please retry");
+			}
 		});
 	}
 

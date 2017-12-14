@@ -177,11 +177,9 @@
                                                                         <div class="entityWrapper" ng-repeat="physicsquant in physicseq.physics_quantities">
                                                                             <div class="inputlabel" style="margin-bottom: 20px;">
                                                                                 <span><b>QUANTITY {{$index+1}} | </b></span>
-                                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedPhysQuants.indexOf($index)<0" ng-click="expandphysquant($index)">[SHOW]</button>
-                                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedPhysQuants.indexOf($index)>-1" ng-click="collapsephysquant($index)">[HIDE]</button>
                                                                                 <button class="customBtn smallerBtn" ng-click="removephysquant(physicseq, $index)" style="color: red">[REMOVE]</button>
                                                                             </div>
-                                                                            <div ng-show="expandedPhysQuants.indexOf($index)>-1">
+                                                                            <div>
                                                                                 <div class="inputwrapper">
                                                                                     <div class="inputlabel">MATH SYMBOL:</div>
                                                                                     <input class="input" type="text" ng-model="physicsquant.math_symbol"></input>
@@ -234,11 +232,9 @@
                                                                         <div class="entityWrapper" ng-repeat="matquant in materialrel.material_quantities">
                                                                             <div class="inputlabel" style="margin-bottom: 20px;">
                                                                                 <span><b>QUANTITY {{$index+1}} | </b></span>
-                                                                                <button class="customBtn smallerBtn showBtn" ng-show="expandedMatQuants.indexOf($index)<0" ng-click="expandmatquant($index)">[SHOW]</button>
-                                                                                <button class="customBtn smallerBtn hideBtn" ng-show="expandedMatQuants.indexOf($index)>-1" ng-click="collapsematquantt($index)">[HIDE]</button>
                                                                                 <button class="customBtn smallerBtn" ng-click="removematquant(materialrel, $index)" style="color: red">[REMOVE]</button>
                                                                             </div>
-                                                                            <div ng-show="expandedMatQuants.indexOf($index)>-1">
+                                                                            <div>
                                                                                 <div class="inputwrapper">
                                                                                     <div class="inputlabel">MATH SYMBOL:</div>
                                                                                     <input class="input" type="text" ng-model="matquant.math_symbol"></input>

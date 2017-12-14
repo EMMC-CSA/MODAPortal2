@@ -23,7 +23,6 @@ angular.module('app.controllers').controller('accountCtrl', function($scope, $ti
     }
 
     $scope.checkemail = function() {
-        console.log($scope.accountForm.emailinput);
         if (!$scope.accountForm.emailinput.$valid || !$scope.user.email || $scope.user.email.length < 5) {
             $scope.$emit('showErr', true, "invalid email address");
             $scope.warnEmail = true;
