@@ -4,7 +4,7 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
         if ($cookies.get('emmcusercookie')) {
             return true;
         } else {
-            return false;
+            return checkUserStatus();
         }
     }
 
@@ -20,12 +20,15 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
         
         return $http(req)
         .then(function successCallback(res) {
-            return res;
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 365);
+            $cookies.put('emmcusercookie', res.data.data.id, { 'expires': expireDate });
+            return true;
         }, function errorCallback(res) {
             if (res.status == 401) {
                 $cookies.remove('emmcusercookie');
             }
-            return res;
+            return false;
         });
     }
 

@@ -4,7 +4,8 @@ var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var db = require('../helpers/db');
 var authHelpers = require('../auth/_helpers');
-var passport = require('../auth/local');
+var localauth = require('../auth/local');
+var wpauth = require('../auth/wp');
 
 router.post('/register', (req, res, next) => {
     const salt = bcrypt.genSaltSync();
@@ -28,7 +29,7 @@ router.post('/register', (req, res, next) => {
 });
 
 router.post('/login', authHelpers.loginRedirect, (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    localauth.authenticate('local', (err, user, info) => {
         if (err) {
             handleErrResponse(res, err.message == "No data returned from the query." ? 404 : 500, err.message);
         } else if (info && info.status == "error"){
@@ -59,6 +60,35 @@ router.post('/login', authHelpers.loginRedirect, (req, res, next) => {
                     });
                 }
             });
+        }
+    })(req, res, next);
+});
+
+
+router.get('/wordpress',
+  wpauth.authenticate('wordpress'));
+
+
+router.get('/wordpress/callback', (req, res, next) => {
+    wpauth.authenticate('wordpress', (err, user) => {
+        if(user){
+            req.logIn(user, function(err) {
+                if (err) {
+                    handleErrResponse(res, 401, 'failed to login');
+                } else if (user.deleted) {
+                    db.none('UPDATE users SET deleted = false where id = $1', user.id)
+                    .then(function() {
+                        res.redirect('/');
+                    })
+                    .catch(function(err) {
+                        handleErrResponse(res, 400, err.message);
+                    });
+                } else {
+                    res.redirect('/');
+                }
+            });
+        } else if (err) {
+            handleErrResponse(res, err.message == "No data returned from the query." ? 404 : 500, err.message);
         }
     })(req, res, next);
 });

@@ -7,16 +7,19 @@ var bodyParser = require('body-parser');
 var dotenv = require('dotenv').config();
 var session = require('express-session')
 var passport = require('passport');
+var cors = require('cors');
 
 
 
 //CONFIG
 var app = express();
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 if(process.env.MODE == 'dev')
     app.use(logger('dev'));
 else
     app.use(logger('common'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -29,6 +32,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
 
 
@@ -54,10 +58,10 @@ app.use(function(err, req, res, next) {
     var errormsg = process.env.MODE == 'dev' ? String(err) : err.message;
     console.log(err);
     res.status(err.code || 500)
-        .json({
-            status: 'error',
-            message: errormsg
-        });
+    .json({
+        status: 'error',
+        message: errormsg
+    });
 });
 
 

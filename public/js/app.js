@@ -1,4 +1,4 @@
- var app = angular.module('app', ['ngRoute', 'ngCookies', 'app.controllers', 'app.services', 'app.directives', 'ngSanitize', 'angularjs-dropdown-multiselect']);
+ var app = angular.module('app', ['ngRoute', 'ngCookies', 'app.controllers', 'app.services', 'app.directives', 'ngSanitize']);
 
  app.config(function($routeProvider, $locationProvider) {
    $routeProvider
