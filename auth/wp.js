@@ -19,7 +19,7 @@ passport.use(new WordpressStrategy({
 	.catch(function(error) {
 		if(error.message == "No data returned from the query."){
 			var datenow = Date.now() / 1000;
-			db.one("INSERT INTO users(name, email, password, country, date_added) VALUES($1, $2, $3, $4, to_timestamp($5)) RETURNING email", [user.display_name, user.email, accessToken, user.user_ip_country_code, datenow])
+			db.one("INSERT INTO users(name, email, password, country, ext_id, date_added) VALUES($1, $2, $3, $4, $5, to_timestamp($6))", [user.display_name, user.email, accessToken, user.user_ip_country_code, user.ID, datenow])
 			.then(function(newuser) {
 				return done(null, newuser);
 			})

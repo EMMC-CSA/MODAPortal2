@@ -65,24 +65,24 @@
 
 
  app.run(function($rootScope, $location, $route, AuthService) {
-   AuthService.checkUserStatus();
-   $rootScope.$on('$routeChangeStart',
-     function(event, next, current) {
-       if (next.access.restricted) {
-         var nextPath = next.originalPath;
-         if (nextPath == "/modas/:modaIdParam") {
-           nextPath = "/modas/" + next.params.modaIdParam;
-         }
-         if (!AuthService.isLoggedIn()) {
-          $location.path('/login').search({ next: nextPath.substring(1) });
-          $route.reload();
-        }
+   $rootScope.$on('$routeChangeStart', function(event, next, current) {
+    AuthService.isLoggedIn().then(function(isloggedin){
+      if (next.access.restricted) {
+       var nextPath = next.originalPath;
+       if (nextPath == "/modas/:modaIdParam") {
+         nextPath = "/modas/" + next.params.modaIdParam;
+       }
+       if (!isloggedin) {
+        $location.path('/login').search({ next: nextPath.substring(1) });
+        $route.reload();
       }
-      if (next.params.next && AuthService.isLoggedIn()) {
-       var newPath = '/' + next.params.next;
-       $location.path(newPath);
-       $location.url($location.path());
-       $route.reload();
-     }
-   });
+    }
+    if (next.params.next && isloggedin) {
+     var newPath = '/' + next.params.next;
+     $location.path(newPath);
+     $location.url($location.path());
+     $route.reload();
+   }
+ });
+  });
  });

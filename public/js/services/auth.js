@@ -1,15 +1,17 @@
-angular.module('app.services').factory('AuthService', function(api, $http, $cookies) {
+angular.module('app.services').factory('AuthService', function(api, $http, $cookies, $q) {
 
     function isLoggedIn() {
-        if ($cookies.get('emmcusercookie')) {
-            return true;
-        } else {
-            return checkUserStatus();
-        }
-    }
+        var deferred = $q.defer();
 
-    function getUserId() {
-        return $cookies.get('emmcusercookie');
+        if ($cookies.get('emmcusercookie')) {
+            deferred.resolve(true);
+        } else {
+            checkUserStatus().then(function(result){
+                deferred.resolve(result);
+            });
+        }
+        
+        return deferred.promise;
     }
 
     function checkUserStatus() {
@@ -18,18 +20,21 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
             url: api.baseUrl + '/auth/status'
         }
         
-        return $http(req)
-        .then(function successCallback(res) {
+        return $http(req).then(function successCallback(res) {
             var expireDate = new Date();
             expireDate.setDate(expireDate.getDate() + 365);
-            $cookies.put('emmcusercookie', res.data.data.id, { 'expires': expireDate });
+            $cookies.put('emmcusercookie', res.data.data, { 'expires': expireDate });
             return true;
         }, function errorCallback(res) {
             if (res.status == 401) {
                 $cookies.remove('emmcusercookie');
+                return false;
             }
-            return false;
         });
+    }
+
+    function getUserId() {
+        return $cookies.get('emmcusercookie');
     }
 
 
@@ -63,6 +68,7 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
             $cookies.remove('emmcusercookie');
             return res;
         }, function errorCallback(res) {
+            console.log(res);
             return res;
         });
     }

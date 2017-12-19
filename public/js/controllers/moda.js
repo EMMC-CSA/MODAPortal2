@@ -11,6 +11,279 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	$scope.expandedSolverComps = [];
 	$scope.expandedPostProcessings = [];
 
+	$scope.modelTypes = [
+	{
+		"name": "Electronic Models",
+		"elements": [
+		{
+			"name": "Schrödinger Equation based models",
+			"elements": [
+			{
+				"name": "Single particle Schrödinger models",
+				"elements": [
+				{
+					"name": "Ab initio quantum mechanical (or first principle) models",
+					"elements": []
+				},
+				{
+					"name": "Schrödinger equation with Hartree-Fock Hamiltonian model",
+					"elements": []
+				},
+				{
+					"name": "Higher level ab initio models",
+					"elements": []
+				},
+				]
+			},
+			{
+				"name":  "Many body Schrödinger models",
+				"elements": [
+				{
+					"name": "Schrödinger equation with nearly free electron Hamiltonian model",
+					"elements": []
+				},
+				{
+					"name": "Schrödinger with semi-empirical tight binding Hamiltonian model",
+					"elements": []
+				},
+				{
+					"name": "Schrödinger equation with Hubbard Hamiltonian model",
+					"elements": []
+				},
+				{
+					"name": "Schrödinger equation with k⋅p effective Hamiltonian model",
+					"elements": []
+				}
+				]
+			},
+			{
+				"name":  "Quantum mechanical time dependant Schrödinger models",
+				"elements": [
+				{
+					"name": "The time-dependent Schrödinger equation with k⋅p effective Hamiltonian model",
+					"elements": []
+				},
+				{
+					"name": "Other time-dependent Schrödinger models",
+					"elements": []
+				}
+				]
+			}
+			]
+		},
+		{
+			"name": "Kohn Sham equation Density Functional Theory (electronic DFT)",
+			"elements": [
+			{
+				"name": "Kohn-Sham equation, Pseudopotentials, Projector Augmented Waves",
+				"elements": []
+			},
+			{
+				"name": "TD-DFT and TD(Spin)DFT",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Quantum Dynamic Mean Field Theory",
+			"elements": []
+		},
+		{
+			"name": "NEGF",
+			"elements": []
+		},
+		{
+			"name": "Representations of continuous media",
+			"elements": [
+			{
+				"name": "Polarisable continuum approximation",
+				"elements": []
+			},
+			{
+				"name": "Envelope function approximation",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Statistical charge transport model",
+			"elements": [
+			{
+				"name": "Statistical semi-classical transport model for drift-diffusion (BTE)",
+				"elements": []
+			},
+			{
+				"name": "Fermi Golden Rule (FGR) (hopping model) for quasi particle transport",
+				"elements": []
+			},
+			{
+				"name": "Percolation models",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Statistical spin transport model",
+			"elements": []
+		}
+		]
+	},
+	{
+		"name": "Atomistic models",
+		"elements": [
+		{
+			"name": "Classical Density Functional Theory and Dynamic Density Functional Theory",
+			"elements": []
+		},
+		{
+			"name": "Newton's equation based model",
+			"elements": [
+			{
+				"name": "Molecular Mechanics",
+				"elements": []
+			},
+			{
+				"name": "Molecular Dynamics (MD)",
+				"elements": [
+				{
+					"name": "Classical Molecular Dynamics",
+					"elements": []
+				},
+				{
+					"name": "Ab initio Molecular Dynamics",
+					"elements": []
+				},
+				{
+					"name": "Quantum Mechanics/Molecular Mechanics (QM/MM) a workflow",
+					"elements": []
+				}
+				]
+			}
+			]
+		},
+		{
+			"name": "Statistical Mechanics atomistic models",
+			"elements": [
+			{
+				"name": "Monte Carlo Molecular Models",
+				"elements": []
+			},
+			{
+				"name": "Kinetic Monte Carlo Models",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Atomistic spin models",
+			"elements": [
+			{
+				"name": "Deterministics spin models",
+				"elements": []
+			},
+			{
+				"name": "Langevin Dynamic method for magnetic spin systems",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Statistical transport model at atomistic level",
+			"elements": []
+		},
+		{
+			"name": "Atomistic phonon-based models (Boltzmann Transport Equation)",
+			"elements": []
+		}
+		]
+	},
+	{
+		"name": "Mesoscopic (particle) models",
+		"elements": [
+		{
+			"name": "Mesoscopic Classical Density Functional Theory and Dynamic Density Functional Theory",
+			"elements": []
+		},
+		{
+			"name": "Coarse-Grained Molecular Dynamics and Dissipative Particle Dynamics",
+			"elements": [
+			{
+				"name": "Coarse-Grained Molecular Dynamics",
+				"elements": []
+			},
+			{
+				"name": "Dissipative Particle Dynamics (DPD)",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Statistical Mechanics mesoscopic models",
+			"elements": []
+		},
+		{
+			"name": "Micromagnetic models",
+			"elements": []
+		},
+		{
+			"name": "Mesoscopic phonon models (Boltzmann Transport Equation)",
+			"elements": []
+		}
+		]
+	},
+	{
+		"name": "Continuum modelling of materials",
+		"elements": [
+		{
+			"name": "Solid Mechanics",
+			"elements": []
+		},
+		{
+			"name": "Fluid Mechanics",
+			"elements": []
+		},
+		{
+			"name": "Heat Flow and Thermo-mechanical behaviour",
+			"elements": []
+		},
+		{
+			"name": "Continuum Thermodynamics and Phase Field models",
+			"elements": [
+			{
+				"name": "Thermodynamics",
+				"elements": []
+			},
+			{
+				"name": "Phase Field models",
+				"elements": []
+			}
+			]
+		},
+		{
+			"name": "Chemistry reaction (kinetic) models (continuum)",
+			"elements": []
+		},
+		{
+			"name": "Electromagnetism (including optics, magnetics and electrical)",
+			"elements": [
+			{
+				"name": "Magnetics",
+				"elements": []
+			},
+			{
+				"name": "Electr(on)ic",
+				"elements": []
+			},
+			{
+				"name": "Optics",
+				"elements": []
+			}
+			]
+		}
+		]
+	}
+	];
+
 	$scope.ui = {
 		showOverview: false,
 		showWorkflow: false,
@@ -36,14 +309,6 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 		};
 		$scope.modaData.workflowDOT = 'digraph G {rankdir=LR; splines="ortho"; ranksep=equally;}';
 	}
-
-	$scope.modelVariants = [
-	{id:1, type: "TYPE 1", entity: "ENTITY 1"},
-	{id:2, type: "TYPE 2", entity: "ENTITY 2"},
-	{id:3, type: "TYPE 3", entity: "ENTITY 3"},
-	{id:4, type: "TYPE 4", entity: "ENTITY 4"}
-	]; 
-
 
 	$scope.toggleOverview = function(){
 		$scope.ui.showOverview = !$scope.ui.showOverview;
@@ -161,6 +426,11 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			return false
 	}
 
+	$scope.modifyModelType = function(model){
+		var modelType = model.type;
+		model.entity = modelType.substring(0, modelType.indexOf(">"));
+	}
+
 	$scope.modifyCoupling = function(model){
 		var thisModelNum = model.number;
 
@@ -189,15 +459,6 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 			}
 		}
 	}
-
-	$scope.skipValues = function(model, flag) {
-		return function(value, index, array) {
-			if(flag == 1)
-				return model.index !== index && !$scope.hasCoupled(model, index);
-			else
-				return model.index !== index;
-		}
-	};
 
 	$scope.addmodel = function() {
 		var model = {

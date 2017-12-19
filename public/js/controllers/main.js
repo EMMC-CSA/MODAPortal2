@@ -1,11 +1,15 @@
 angular.module('app.controllers', []).controller('mainCtrl', function($scope, $location, $route, $timeout, AuthService) {
-    $scope.loggedin = AuthService.isLoggedIn();
     $scope.showLoading = false;
     $scope.showErr = false;
     $scope.showMsg = false;
     $scope.errMsg = "";
     $scope.regMsg = "";
     
+
+    AuthService.isLoggedIn().then(function(result){
+        $scope.loggedin = result;
+    });
+
     $scope.$on('simulateClick', function(event, data) {
         $timeout(function() {
             angular.element(document.querySelector("#" + data)).triggerHandler('click');

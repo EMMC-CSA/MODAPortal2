@@ -11,6 +11,9 @@
                     <div class="inputwrapper">
                         <div class="inputlabel mainSectionTitle">
                             <span>CREATE/UPDATE YOUR MODA</span>
+                            <div class="inputsublabel">
+                                Click SHOW / HIDE on each section to toggle visibility
+                            </div>
                         </div>
                         <div class="subinputwrapper">
                             <div class="inputlabel">USE CASE (SHORT TITLE):</div>
@@ -27,7 +30,7 @@
                                 <button class="customBtn smallerBtn showBtn" ng-show="!ui.showOverview" ng-click="toggleOverview()">[SHOW]</button>
                                 <button class="customBtn smallerBtn hideBtn" ng-show="ui.showOverview" ng-click="toggleOverview()">[HIDE]</button>
                             </div>
-                            <div ng-show="ui.showOverview">
+                            <div class="genericleftborder" ng-show="ui.showOverview">
                                 <div class="subinputwrapper">
                                     <div class="inputlabel">USE CASE (DESCRIPTION):</div>
                                     <textarea class="input" rows="4" cols="50" ng-model="modaData.simulation_overview.usecase_desc"></textarea>
@@ -54,22 +57,17 @@
                                 <button class="customBtn smallerBtn hideBtn" ng-show="ui.showWorkflow" ng-click="toggleWorkflow()">[HIDE]</button>
                                 <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
                             </div>
-                            <div class="subinputwrapper" ng-show="ui.showWorkflow">
+                            <div class="subinputwrapper genericleftborder" ng-show="ui.showWorkflow">
                                 <div id="graphVizContainer">WORKFLOW PLOT WILL BE GENERATED HERE AS YOU ADD AND CONNECT (LINK/COUPLE) MODELS</div>
                             </div>
                         </div>
                         <div class="subinputwrapper">
                             <div class="inputlabel mainSectionSubTitle">
                                 <span>MODELS | </span>
-                                <button class="customBtn smallerBtn showBtn" ng-show="!ui.showModels" ng-click="toggleModels()">[SHOW]</button>
-                                <button class="customBtn smallerBtn hideBtn" ng-show="ui.showModels" ng-click="toggleModels()">[HIDE]</button>
-                                <button class="customBtn smallerBtn" ng-show="ui.showModels" ng-click="addmodel()">[ADD MODEL]</button>
+                                <button class="customBtn smallerBtn" ng-click="addmodel()">[ADD MODEL]</button>
                                 <button class="customBtn smallerBtn" ng-click="regenerateworkflow()">[UPDATE WORKFLOW PLOT]</button>
                             </div>
-                            <div class="inputsublabel">
-                                Click SHOW / HIDE on each section to toggle visibility
-                            </div>
-                            <div class="subinputwrapper" ng-show="ui.showModels">
+                            <div class="subinputwrapper genericleftborder" ng-show="ui.showModels">
                                 <div class="entityWrapper" ng-repeat="model in modaData.models track by $index">
                                     <div class="inputlabel hContent" style="margin-bottom: 20px;">
                                         <div>
@@ -79,38 +77,43 @@
                                             <button class="customBtn smallerBtn" ng-click="removemodel($index)" style="color: red">[REMOVE]</button>
                                         </div>
                                         <div class="inputwrapperH">
-                                            <div class="inputlabel autoWidth">| MODEL TYPE:</div>
-                                            <select class="input autoWidth typeHeight" ng-model="model.type_entity" ng-options="modelVariant.type for modelVariant in modelVariants track by modelVariant.id">
-                                                <option value="">SELECT</option>
-                                            </select>
-                                        </div>
-                                        <div class="inputwrapperH">
                                             <div class="inputlabel autoWidth">| <b>LINK</b> TO MODEL(S):</div>
-                                            <select class="input multiInput" ng-options="modelsub.number as modelsub.number for modelsub in modaData.models | filter:skipValues(model, 1)" ng-model="model.link_to_models" multiple size="2">
+                                            <select class="input multiInput" ng-model="model.link_to_models" multiple size="2">
+                                                <option ng-repeat="modelsub in modaData.models track by $index" ng-if="model.index !== $index" ng-value="modelsub.number" ng-disabled="hasCoupled(model, $index)">{{modelsub.number}}</option>
                                             </select>
                                         </div>
                                         <div class="inputwrapperH">
                                             <div class="inputlabel autoWidth">| <b>COUPLE</b> TO MODEL(S):</div>
-                                            <select class="input multiInput" ng-options="modelsub.number as modelsub.number for modelsub in modaData.models | filter:skipValues(model)" ng-model="model.couple_to_models" ng-change="modifyCoupling(model)" multiple size="2">
+                                            <select class="input multiInput" ng-model="model.couple_to_models" ng-change="modifyCoupling(model)" multiple size="2">
+                                                <option ng-repeat="modelsub in modaData.models track by $index" ng-if="model.index !== $index" ng-value="modelsub.number">{{modelsub.number}}</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div ng-show="expandedModels.indexOf($index)>-1">
+                                        <div class="inputwrapper">
+                                            <div class="inputlabel">MODEL TYPE:</div>
+                                            <select class="input typeHeight" ng-model="model.type" ng-change="modifyModelType(model)">
+                                                <option value="">SELECT</option>
+                                                <optgroup ng-repeat="modelType in modelTypes track by $index" label="{{modelType.name}}">
+                                                    <option ng-repeat="modelsubtype in modelType.elements" ng-if="modelsubtype.elements.length == 0"  ng-value="modelType.name + ' > ' + modelsubtype.name">{{modelsubtype.name}}</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
                                         <div class="inputwrapper">
                                             <div class="inputlabel">MODEL NAME:</div>
                                             <input class="input" type="text" ng-model="model.name" maxlength="40"></input>
                                         </div>
                                         <div class="inputwrapper">
                                             <div class="inputlabel">ENTITY:</div>
-                                            <div class="setValue">{{model.type_entity.entity}}</div>
+                                            <div class="setValue">{{model.entity}}</div>
                                         </div>
                                         <div class="inputwrapper">
-                                            <div class="inputlabel mainSectionSubSubTitle">
+                                            <div class="inputlabel mainSectionSubSubTitle aspectbg">
                                                 <span>ASPECT OF THE USER CASE/SYSTEM TO BE SIMULATED</span>
                                                 <button class="customBtn smallerBtn showBtn" ng-show="expandedAspects.indexOf($index)<0" ng-click="expandAspect($index)">[SHOW]</button>
                                                 <button class="customBtn smallerBtn hideBtn" ng-show="expandedAspects.indexOf($index)>-1" ng-click="collapseAspect($index)">[HIDE]</button>
                                             </div>
-                                            <div class="subinputwrapper" ng-show="expandedAspects.indexOf($index)>-1">
+                                            <div class="subinputwrapper aspectleftborder" ng-show="expandedAspects.indexOf($index)>-1">
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">ASPECT TO BE SIMULATED:</div>
                                                     <textarea class="input" rows="4" cols="50" ng-model="model.simulation_aspect.aspect"></textarea>
@@ -138,12 +141,12 @@
                                             </div>
                                         </div>
                                         <div class="inputwrapper">
-                                            <div class="inputlabel mainSectionSubSubTitle">
+                                            <div class="inputlabel mainSectionSubSubTitle genphysicsbg">
                                                 <span>GENERIC PHYSICS OF THE MODEL EQUATION</span>
                                                 <button class="customBtn smallerBtn showBtn" ng-show="expandedGenPhysics.indexOf($index)<0" ng-click="expandGenPhysics($index)">[SHOW]</button>
                                                 <button class="customBtn smallerBtn hideBtn" ng-show="expandedGenPhysics.indexOf($index)>-1" ng-click="collapseGenPhysics($index)">[HIDE]</button>
                                             </div>
-                                            <div ng-show="expandedGenPhysics.indexOf($index)>-1">
+                                            <div class="genphysicsleftborder" ng-show="expandedGenPhysics.indexOf($index)>-1">
                                                 <div class="subinputwrapper">
                                                     <div class="inputlabel"><span>PHYSICS EQUATIONS | </span><button class="customBtn smallerBtn" ng-click="addphyseq(model)">[ADD]</button></div>
                                                     <div class="subinputwrapper">
@@ -257,12 +260,12 @@
                                             </div>
                                         </div>
                                         <div class="inputwrapper">
-                                            <div class="inputlabel mainSectionSubSubTitle">
+                                            <div class="inputlabel mainSectionSubSubTitle solverbg">
                                                 <span>SOLVER AND COMPUTATIONAL TRANSLATION OF THE SPECIFICATIONS</span>
                                                 <button class="customBtn smallerBtn showBtn" ng-show="expandedSolverComps.indexOf($index)<0" ng-click="expandSolverComp($index)">[SHOW]</button>
                                                 <button class="customBtn smallerBtn hideBtn" ng-show="expandedSolverComps.indexOf($index)>-1" ng-click="collapseSolverComp($index)">[HIDE]</button>
                                             </div>
-                                            <div class="subinputwrapper" ng-show="expandedSolverComps.indexOf($index)>-1">
+                                            <div class="subinputwrapper solverleftborder" ng-show="expandedSolverComps.indexOf($index)>-1">
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">NUMERICAL SOLVER:</div>
                                                     <textarea class="input" rows="1" cols="50" ng-model="model.solver_comp_translation.numerical_solver"></textarea>
@@ -303,12 +306,12 @@
                                             </div>
                                         </div>
                                         <div class="inputwrapper">
-                                            <div class="inputlabel mainSectionSubSubTitle">
+                                            <div class="inputlabel mainSectionSubSubTitle postprocessbg">
                                                 <span>POST PROCESSING</span>
                                                 <button class="customBtn smallerBtn showBtn" ng-show="expandedPostProcessings.indexOf($index)<0" ng-click="expandPostProcessing($index)">[SHOW]</button>
                                                 <button class="customBtn smallerBtn hideBtn" ng-show="expandedPostProcessings.indexOf($index)>-1" ng-click="collapsePostProcessing($index)">[HIDE]</button>
                                             </div>
-                                            <div class="subinputwrapper" ng-show="expandedPostProcessings.indexOf($index)>-1">
+                                            <div class="subinputwrapper postprocessleftborder" ng-show="expandedPostProcessings.indexOf($index)>-1">
                                                 <div class="inputwrapper">
                                                     <div class="inputlabel">THE PROCESSED OUTPUT:</div>
                                                     <textarea class="input" rows="4" cols="50" ng-model="model.post_processing.processed_output"></textarea>

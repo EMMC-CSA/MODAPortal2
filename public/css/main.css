@@ -225,6 +225,7 @@ h5 {
 .mainSectionSubTitle{
     font-size: 1.6vw !important;
     color: black !important;
+    background:  #d3d3d3;
 }
 
 .mainSectionSubSubTitle{
@@ -285,7 +286,46 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .hideBtn{
-    color: #c05c33;
+    color: #e24d3f;
+}
+
+.genericleftborder{
+    border-left: 2.5px solid #d3d3d3;
+}
+
+.aspectbg{
+    background:#e48f8a;
+}
+
+.aspectleftborder{
+    border-left: 2.5px solid #e48f8a;
+}
+
+
+.genphysicsbg{
+    background:#9ab3d4;
+}
+
+.genphysicsleftborder{
+    border-left: 2.5px solid #9ab3d4;
+}
+
+
+.solverbg{
+    background:#529642;
+}
+
+.solverleftborder{
+    border-left: 2.5px solid #529642;
+}
+
+
+.postprocessbg{
+    background:#d6fdd0;
+}
+
+.postprocessleftborder{
+    border-left: 2.5px solid #d6fdd0;
 }
 
 .inputlabel{
@@ -303,7 +343,7 @@ input[type=number]::-webkit-outer-spin-button {
     font-family: 'Roboto Mono', sans-serif;
     font-weight: 300;
     margin-left: 10px;
-    font-size: 1vw;
+    font-size: 0.9vw;
 }
 
 

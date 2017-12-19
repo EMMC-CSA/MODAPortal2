@@ -1,7 +1,6 @@
 angular.module('app.controllers').controller('accountCtrl', function($scope, $timeout, $location, $route, AuthService, UsersService) {
     $scope.editMode = false;
     $scope.deactivateCounter = 0;
-    $scope.loggedin = AuthService.isLoggedIn();
     $scope.warnEmail = false;
     $scope.warnPass = false;
     $scope.warnFullName = false;
@@ -14,13 +13,18 @@ angular.module('app.controllers').controller('accountCtrl', function($scope, $ti
         angular.element(document.querySelector('#profileBtn')).triggerHandler('click');
     }, 0);
 
-    if ($scope.loggedin) {
-        UsersService.getUser(AuthService.getUserId()).then(function(res) {
-            if (res.status == 200) {
-                $scope.user = res.data.data;
-            }
-        });
-    }
+
+    AuthService.isLoggedIn().then(function(result){
+        $scope.loggedin = result;
+        if ($scope.loggedin) {
+            UsersService.getUser(AuthService.getUserId()).then(function(res) {
+                if (res.status == 200) {
+                    $scope.user = res.data.data;
+                }
+            });
+        }
+    });
+    
 
     $scope.checkemail = function() {
         if (!$scope.accountForm.emailinput.$valid || !$scope.user.email || $scope.user.email.length < 5) {
