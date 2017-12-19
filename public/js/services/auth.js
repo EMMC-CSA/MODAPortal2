@@ -68,7 +68,6 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
             $cookies.remove('emmcusercookie');
             return res;
         }, function errorCallback(res) {
-            console.log(res);
             return res;
         });
     }
