@@ -32,7 +32,7 @@ router.post('/', authHelpers.loginRequired, upload.single('file'), (req, res, ne
 });
 
 router.get('/usermodas/:offset(\\d+)', authHelpers.loginRequired, (req, res, next) => {
-    db.any('SELECT * FROM modas WHERE user_id=$1 ORDER BY date_added desc, deleted desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
+    db.any('SELECT * FROM modas WHERE user_id=$1 ORDER BY deleted asc, date_added desc LIMIT 20 OFFSET $2', [parseInt(req.user.id), parseInt(req.params.offset)])
     .then(function(data) {
         res.status(200)
         .json({

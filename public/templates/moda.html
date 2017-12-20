@@ -78,26 +78,38 @@
                                         </div>
                                         <div class="inputwrapperH">
                                             <div class="inputlabel autoWidth">| <b>LINK</b> TO MODEL(S):</div>
-                                            <select class="input multiInput" ng-model="model.link_to_models" multiple size="2">
-                                                <option ng-repeat="modelsub in modaData.models track by $index" ng-if="model.index !== $index" ng-value="modelsub.number" ng-disabled="hasCoupled(model, $index)">{{modelsub.number}}</option>
+                                            <select chosen class="input multiInput" ng-model="model.link_to_models" multiple data-placeholder="SELECT MODEL(S)">
+                                                <option ng-repeat="modelsub in modaData.models track by $index" ng-if="model.index !== $index && !hasCoupled(model, $index)" ng-value="modelsub.number">{{modelsub.number}}</option>
                                             </select>
                                         </div>
                                         <div class="inputwrapperH">
                                             <div class="inputlabel autoWidth">| <b>COUPLE</b> TO MODEL(S):</div>
-                                            <select class="input multiInput" ng-model="model.couple_to_models" ng-change="modifyCoupling(model)" multiple size="2">
+                                            <select chosen class="input multiInput" ng-model="model.couple_to_models" ng-change="modifyCoupling(model)" multiple data-placeholder="SELECT MODEL(S)">
                                                 <option ng-repeat="modelsub in modaData.models track by $index" ng-if="model.index !== $index" ng-value="modelsub.number">{{modelsub.number}}</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div ng-show="expandedModels.indexOf($index)>-1">
+                                        <div class="inputsublabel">
+                                            Choose the model's main and sub- types according to the <a href="https://emmc.info/wp-content/uploads/2017/12/KI0616197ENN.en_.pdf" target="_blank">Review of Material Modelling (RoMM)</a>
+                                        </div>
                                         <div class="inputwrapper">
-                                            <div class="inputlabel">MODEL TYPE:</div>
-                                            <select class="input typeHeight" ng-model="model.type" ng-change="modifyModelType(model)">
-                                                <option value="">SELECT</option>
-                                                <optgroup ng-repeat="modelType in modelTypes track by $index" label="{{modelType.name}}">
-                                                    <option ng-repeat="modelsubtype in modelType.elements" ng-if="modelsubtype.elements.length == 0"  ng-value="modelType.name + ' > ' + modelsubtype.name">{{modelsubtype.name}}</option>
-                                                </optgroup>
+                                            <div class="inputlabel">MAIN TYPE:</div>
+                                            <select chosen max-selected-options="1" class="input" ng-model="model.type" ng-change="modifyModelType(model)" ng-options="modelType.name as modelType.name for modelType in modelTypes" multiple placeholder-text-multiple="'SELECT TYPE'">
                                             </select>
+                                            <div class="inputlabel">SUBTYPE:</div>
+                                            <select chosen max-selected-options="1" class="input" ng-model="model.subtype_1" ng-change="modifyModelSubType1(model)" ng-options="subtype.name as subtype.name for subtype in model.typeobj.elements" multiple placeholder-text-multiple="'SELECT SUBTYPE 1'">
+                                            </select>
+                                            <div ng-if="model.subtype_1obj.elements.length > 0">
+                                                <div class="inputlabel">SUBTYPE:</div>
+                                                <select chosen max-selected-options="1" class="input" ng-model="model.subtype_2" ng-change="modifyModelSubType2(model)" ng-options="subtype.name as subtype.name for subtype in model.subtype_1obj.elements" multiple placeholder-text-multiple="'SELECT SUBTYPE 2'">
+                                                </select>
+                                            </div>
+                                            <div ng-if="model.subtype_2obj.elements.length > 0">
+                                                <div class="inputlabel">SUBTYPE:</div>
+                                                <select chosen max-selected-options="1" class="input" ng-model="model.subtype_3"  ng-options="subtype.name as subtype.name for subtype in model.subtype_2obj.elements" multiple placeholder-text-multiple="'SELECT SUBTYPE 3'">
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="inputwrapper">
                                             <div class="inputlabel">MODEL NAME:</div>

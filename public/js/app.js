@@ -1,4 +1,4 @@
- var app = angular.module('app', ['ngRoute', 'ngCookies', 'app.controllers', 'app.services', 'app.directives', 'ngSanitize']);
+ var app = angular.module('app', ['ngRoute', 'ngCookies', 'app.controllers', 'app.services', 'app.directives', 'ngSanitize', 'localytics.directives']);
 
  app.config(function($routeProvider, $locationProvider) {
    $routeProvider

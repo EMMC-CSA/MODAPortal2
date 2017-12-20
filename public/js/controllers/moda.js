@@ -14,6 +14,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	$scope.modelTypes = [
 	{
 		"name": "Electronic Models",
+		"entityName": "Electron",
 		"elements": [
 		{
 			"name": "Schrödinger Equation based models",
@@ -130,6 +131,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	},
 	{
 		"name": "Atomistic models",
+		"entityName": "Atom",
 		"elements": [
 		{
 			"name": "Classical Density Functional Theory and Dynamic Density Functional Theory",
@@ -199,6 +201,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	},
 	{
 		"name": "Mesoscopic (particle) models",
+		"entityName": "Particle",
 		"elements": [
 		{
 			"name": "Mesoscopic Classical Density Functional Theory and Dynamic Density Functional Theory",
@@ -233,6 +236,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 	},
 	{
 		"name": "Continuum modelling of materials",
+		"entityName": "Continuum Volume",
 		"elements": [
 		{
 			"name": "Solid Mechanics",
@@ -374,7 +378,7 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 				nodeNames.push(name);
 			}
 
-			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=2.5, height=1.5, fixedsize=true] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="' + modelShortProcess + '"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="'+ modelShortName +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="See Quantities of PEs"]' + nodeNames[3] + '[fillcolor="#d6fdd0" label="' + modelShortOutput + '"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";}';
+			var DOTstr = ' subgraph model_' + modelNum + ' {node [style=filled, fontsize = 10, width=2.5, height=1.5, fixedsize=true] ' + nodeNames[0] + '[fillcolor="#e07b7b" label="' + modelShortProcess + '"] ' + nodeNames[1] + '[fillcolor="#bedde7" label="'+ modelShortName +'"] ' + nodeNames[2] + '[fillcolor="#529642" label="See Quantities of PEs"] ' + nodeNames[3] + '[fillcolor="#d6fdd0" label="' + modelShortOutput + '"]; '+ nodeNames[0] +' -> '+ nodeNames[1] +' -> '+ nodeNames[2] +' -> '+ nodeNames[3] +'; label = "MODEL ' + modelNum + '";} ';
 			var insertPos = $scope.modaData.workflowDOT.indexOf("nodesep=equally;")+17;
 			var output = [$scope.modaData.workflowDOT.slice(0, insertPos), DOTstr, $scope.modaData.workflowDOT.slice(insertPos)].join('');
 			$scope.modaData.workflowDOT = output;
@@ -420,16 +424,52 @@ angular.module('app.controllers').controller('modaCtrl', function($scope, $timeo
 
 	$scope.hasCoupled = function(model, index){
 		var coupledIndex = index + 1;
-		if(model.couple_to_models.indexOf(coupledIndex) > -1)
-			return true
-		else
-			return false
+		if(model.couple_to_models.indexOf(coupledIndex) > -1){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	$scope.modifyModelType = function(model){
-		var modelType = model.type;
-		model.entity = modelType.substring(0, modelType.indexOf(">"));
+		model.typeobj = {};
+		model.subtype_1obj = {};
+		model.subtype_1 = "";
+		model.subtype_2obj = {};
+		model.subtype_2 = "";
+		model.subtype_3 = "";
+		model.entity = "";
+		for(var i=0; i<$scope.modelTypes.length; i++){
+			var modeltype = $scope.modelTypes[i];
+			if(modeltype.name == model.type){
+				model.typeobj = modeltype;
+				model.entity = model.typeobj.entityName;
+			}
+
+		}
 	}
+
+	$scope.modifyModelSubType1 = function(model){
+		model.subtype_1obj = {};
+		model.subtype_2obj = {};
+		model.subtype_2 = "";
+		for(var i=0; model.typeobj.elements && i<model.typeobj.elements.length; i++){
+			var modelsubtype = model.typeobj.elements[i];
+			if(modelsubtype.name == model.subtype_1)
+				model.subtype_1obj = modelsubtype;
+		}
+	}
+
+	$scope.modifyModelSubType2 = function(model){
+		model.subtype_2obj = {};
+		model.subtype_3 = "";
+		for(var i=0; model.subtype_1obj.elements && i<model.subtype_1obj.elements.length; i++){
+			var modelsubtype = model.subtype_1obj.elements[i];
+			if(modelsubtype.name == model.subtype_2)
+				model.subtype_2obj = modelsubtype;
+		}
+	}
+
 
 	$scope.modifyCoupling = function(model){
 		var thisModelNum = model.number;
