@@ -30,7 +30,7 @@ footer {
 
 header {
     /*border-bottom: 1px solid rgba(180, 180, 180, 0.3);*/
-    background: rgb(17,31,138);
+    background: rgb(29, 85, 159);
     color: white;
 }
 header a{
@@ -291,7 +291,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .genericleftborder{
-    border-left: 2.5px solid #d3d3d3;
+    border-left: 4px solid #d3d3d3;
 }
 
 .aspectbg{
@@ -299,7 +299,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .aspectleftborder{
-    border-left: 2.5px solid #e48f8a;
+    border-left: 4px solid #e48f8a;
 }
 
 
@@ -308,7 +308,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .genphysicsleftborder{
-    border-left: 2.5px solid #9ab3d4;
+    border-left: 4px solid #9ab3d4;
 }
 
 
@@ -317,7 +317,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .solverleftborder{
-    border-left: 2.5px solid #529642;
+    border-left: 4px solid #529642;
 }
 
 
@@ -326,7 +326,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .postprocessleftborder{
-    border-left: 2.5px solid #d6fdd0;
+    border-left: 4px solid #d6fdd0;
 }
 
 .inputlabel{
@@ -651,7 +651,7 @@ button {
     border-bottom: 2.5px solid rgb(250,243,8);
     text-align: center;
     padding: 0.88em 0 1em 0;
-    background: rgb(17,31,138);
+    background: rgb(29, 85, 159);
     color: white;
 }
 

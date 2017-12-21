@@ -2,6 +2,7 @@ angular.module('app.controllers', []).controller('mainCtrl', function($scope, $l
     $scope.showLoading = false;
     $scope.showErr = false;
     $scope.showMsg = false;
+    $scope.loggedin = false;
     $scope.errMsg = "";
     $scope.regMsg = "";
     
@@ -51,11 +52,11 @@ angular.module('app.controllers', []).controller('mainCtrl', function($scope, $l
         angular.element(document.querySelector("#about")).find("h5").removeClass("underlined");
         AuthService.logout().then(function(res) {
             $scope.showLoading = false;
-            if (res.status = 200) {
-                $scope.loggedin = false;
-                $location.path('/');
-                $route.reload();
-            }
+            
+            $scope.loggedin = false;
+            $location.path('/');
+            $route.reload();
+            
         });
     }
 });

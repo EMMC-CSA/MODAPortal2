@@ -62,10 +62,9 @@ angular.module('app.services').factory('AuthService', function(api, $http, $cook
             method: 'GET',
             url: api.baseUrl + '/auth/logout'
         }
-
+        $cookies.remove('emmcusercookie');
         return $http(req)
         .then(function successCallback(res) {
-            $cookies.remove('emmcusercookie');
             return res;
         }, function errorCallback(res) {
             return res;
