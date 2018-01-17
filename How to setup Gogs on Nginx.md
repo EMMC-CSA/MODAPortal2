@@ -35,9 +35,9 @@ Configuration Cheat Sheet is available [here](https://gogs.io/docs/advanced/conf
 The default configuration is saved in `conf/app.ini`, **DO NOT** edit it! Instead, we'll copy file and create our own config file.
 Create a config file:
 ```
-cd /home/git/go/src/github.com/gogits/gogs
-mkdir -p custom/conf
-cp conf/app.ini custom/conf/app.ini
+$ cd /home/git/go/src/github.com/gogits/gogs
+$ mkdir -p custom/conf
+$ cp conf/app.ini custom/conf/app.ini
 ```
 
 Start Editing `custom/conf/app.ini`, don't forget to remove the warning messages in the first lines.
@@ -61,8 +61,15 @@ Start Editing `custom/conf/app.ini`, don't forget to remove the warning messages
   PASSWD = (write database password)
   PATH = (write database path)
   ```
-
-
+* Under `[mailer]`, disable the mail service (for now):
+  ```
+  ENABLED = false
+  ```
+ 
+* Under `[service]`, disable registration of new users so that only the admin can add users.
+  ```
+  DISABLE_REGISTRATION = true
+  ```
 
 ## 5 - Setting up Nginx server and reverse proxy for Gogs
 Install Nginx `$sudo apt-get install -y nginx`
@@ -92,3 +99,15 @@ sudo ln -s /etc/nginx/sites-availabe/gogs /etc/nginx/sites-enabled/gogs
 sudo service nginx restart
 ```
 Using the browser, Gogs should be available under [data1.iwm.fraunhofer.de/gogs](data1.iwm.fraunhofer.de/gogs)
+
+Nginx instructions can be found [here](https://gogs.io/docs/intro/faqs)
+
+## 6 - Launch Gogs
+Executing the following command will launch Gogs:
+```
+$ cd $GOPATH/src/github.com/gogits/gogs
+$ ./gogs web
+```
+You should be able to see Gogs live at the specified domain name.
+
+Gogs can be launched as a service, follow the instructions [here](https://gogs.io/docs/advanced/configuration_for_source_builds)
